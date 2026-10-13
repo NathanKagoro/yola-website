@@ -83,23 +83,45 @@
   var wardrobe = $("[data-wardrobe]"), tabs = $("[data-scent-tabs]"), panel = $("[data-scent-panel]");
   tabs.innerHTML = Y.scentProfiles.map(function (s, i) {
     return '<li role="presentation"><button type="button" role="tab" id="tab-' + i + '" aria-selected="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '" data-scent-i="' + i + '">' +
-      esc(s.name) + "<small>" + esc(s.mood) + "</small></button></li>";
+      '<span class="nm"><i class="dot" style="--dot:' + s.bg + '"></i>' + esc(s.name) + "</span><small>" + esc(s.mood) + "</small></button></li>";
   }).join("");
   function pickScent(i, focus) {
     var s = Y.scentProfiles[i];
     wardrobe.style.setProperty("--bg", s.bg); wardrobe.style.setProperty("--fg", s.fg); wardrobe.style.setProperty("--accent", s.accent);
-    $$("[data-scent-i]", tabs).forEach(function (b) { var on = +b.dataset.scentI === i; b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; if (on && focus) b.focus(); });
+    $$("[data-scent-i]", tabs).forEach(function (b) { var on = +b.dataset.scentI === i; b.setAttribute("aria-selected", on); b.parentNode.classList.toggle("on", on); b.tabIndex = on ? 0 : -1; if (on && focus) b.focus(); });
     panel.setAttribute("aria-labelledby", "tab-" + i);
     panel.innerHTML = '<div class="scent-bottle"><div class="label"><span class="label-brand">YOLA</span><span class="label-kind">Organic home fragrance</span><span class="label-scent">' + esc(s.name) + "</span></div></div>" +
       "<h3>" + esc(s.name) + '</h3><p class="mood">' + esc(s.mood) + '</p><p class="desc">' + esc(s.desc) + '</p><p class="rooms">Lovely in: ' + esc(s.rooms) + "</p>" +
       '<button type="button" class="btn" data-shop-scent="' + esc(s.name) + '">Shop ' + esc(s.name) + "</button>";
     panel.classList.remove("swap"); void panel.offsetWidth; panel.classList.add("swap");
   }
-  tabs.addEventListener("click", function (e) { var b = e.target.closest("[data-scent-i]"); if (b) pickScent(+b.dataset.scentI); });
+  /* Until someone touches it, the wardrobe plays through the scents by itself so the colour change is obvious. */
+  var AUTO_MS = 3000, autoTimer = null, autoIdx = 0, userTook = false;
+  var hintText = $("[data-hint-text]");
+  wardrobe.style.setProperty("--auto-ms", AUTO_MS + "ms");
+  function autoStep() {
+    autoIdx = (autoIdx + 1) % Y.scentProfiles.length; pickScent(autoIdx);
+    var li = tabs.children[autoIdx]; li.classList.remove("on"); void li.offsetWidth; li.classList.add("on");
+  }
+  function startAuto() {
+    if (reduce || userTook || autoTimer) return;
+    wardrobe.classList.add("auto"); hintText.textContent = "Playing through the scents. Tap one to choose.";
+    var li = tabs.children[autoIdx]; li.classList.remove("on"); void li.offsetWidth; li.classList.add("on");
+    autoTimer = setInterval(autoStep, AUTO_MS);
+  }
+  function stopAuto(byUser) {
+    clearInterval(autoTimer); autoTimer = null; wardrobe.classList.remove("auto");
+    if (byUser) { userTook = true; hintText.textContent = "Tap a scent and the room changes with it."; }
+  }
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (en) {
+    if (en[0].isIntersecting) startAuto(); else stopAuto(false);
+  }, { threshold: 0.6 }).observe(tabs);
+  tabs.addEventListener("click", function (e) { var b = e.target.closest("[data-scent-i]"); if (b) { stopAuto(true); pickScent(+b.dataset.scentI); } });
   tabs.addEventListener("mouseover", function (e) {
     var b = e.target.closest("[data-scent-i]");
-    if (b && b.getAttribute("aria-selected") !== "true" && window.matchMedia("(hover: hover)").matches) pickScent(+b.dataset.scentI);
+    if (b && window.matchMedia("(hover: hover)").matches) { stopAuto(true); if (b.getAttribute("aria-selected") !== "true") pickScent(+b.dataset.scentI); }
   });
+  tabs.addEventListener("focusin", function () { stopAuto(true); });
   tabs.addEventListener("keydown", function (e) {
     var cur = +document.activeElement.dataset.scentI, n = Y.scentProfiles.length;
     if (e.key === "ArrowDown" || e.key === "ArrowRight") { e.preventDefault(); pickScent((cur + 1) % n, true); }
@@ -121,6 +143,15 @@
     $$("button", sw).forEach(function (b) { b.setAttribute("aria-checked", b === btn); b.tabIndex = b === btn ? 0 : -1; });
     miniColour = btn.dataset.colour;
     mini.style.setProperty("--halo", getComputedStyle(btn).getPropertyValue("--sw"));
+    var frame = $("[data-mini-frame]"), cur = $("img:last-child", frame);
+    if (btn.dataset.img && cur.getAttribute("src") !== btn.dataset.img) {
+      var next = new Image(); next.className = "incoming"; next.alt = "A YOLA mini scent machine in " + miniColour.toLowerCase() + ", misting inside a car";
+      next.onload = function () {
+        frame.appendChild(next); void next.offsetWidth; next.classList.remove("incoming");
+        setTimeout(function () { $$("img", frame).forEach(function (im) { if (im !== next) im.remove(); }); }, 600);
+      };
+      next.src = btn.dataset.img;
+    }
     $("[data-swatch-name]").textContent = miniColour;
     $("[data-ask-mini]").textContent = "Ask if " + miniColour.toLowerCase() + " is in stock";
   }
@@ -132,6 +163,12 @@
     if (e.key === "ArrowLeft" || e.key === "ArrowUp") { e.preventDefault(); var pb = bs[(i - 1 + bs.length) % bs.length]; pickFinish(pb); pb.focus(); }
   });
   $$("button", sw).forEach(function (b) { b.tabIndex = b.getAttribute("aria-checked") === "true" ? 0 : -1; });
+  if ("IntersectionObserver" in window) {
+    var pre = new IntersectionObserver(function (en) {
+      if (en[0].isIntersecting) { $$("[data-img]", sw).forEach(function (b) { new Image().src = b.dataset.img; }); pre.disconnect(); }
+    }, { rootMargin: "400px" });
+    pre.observe(mini);
+  }
   $("[data-ask-mini]").addEventListener("click", function () { wa("Hello YOLA, is the waterless mini machine in " + miniColour.toLowerCase() + " in stock? What's the price?"); });
 
   /* ---------- products ---------- */

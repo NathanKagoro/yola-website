@@ -86,7 +86,7 @@ window.YOLA = {
     },
     {
       id: "mini", name: "Waterless mini machine", category: "Mini machines",
-      img: "assets/img/car-mini-pink.jpg", alt: "A rose-pink YOLA mini scent machine misting inside a car",
+      img: "assets/img/car-mini-mercedes.jpg", alt: "A black YOLA mini scent machine misting in a car console",
       tag: "7 colours",
       blurb: "Our best seller. Made for cars, small enclosed spaces and travel. Choose from seven finishes.",
       scented: false,
