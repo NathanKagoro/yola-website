@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>YOLA Inventory</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2343251F'/%3E%3Ctext x='32' y='42' font-family='Futura,Arial' font-size='26' font-weight='600' fill='white' text-anchor='middle'%3EY%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/css/fonts.css">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="app">
+  <aside class="side" aria-label="Sections">
+    <a class="brand" href="#/home">YOLA<span>Inventory</span></a>
+    <nav class="menu" data-menu>
+      <a href="#/home" data-route="home"><i aria-hidden="true">⌂</i>Home</a>
+      <a href="#/sell" data-route="sell" class="menu-sell"><i aria-hidden="true">＋</i>New sale</a>
+      <a href="#/receive" data-route="receive"><i aria-hidden="true">↓</i>Receive stock</a>
+      <a href="#/stock" data-route="stock"><i aria-hidden="true">▤</i>Stock</a>
+      <a href="#/sales" data-route="sales"><i aria-hidden="true">≡</i>Sales</a>
+      <a href="#/customers" data-route="customers"><i aria-hidden="true">☺</i>Customers</a>
+      <a href="#/suppliers" data-route="suppliers"><i aria-hidden="true">⛟</i>Suppliers</a>
+      <a href="#/reports" data-route="reports"><i aria-hidden="true">▥</i>Reports</a>
+      <a href="#/settings" data-route="settings"><i aria-hidden="true">⚙</i>Backup &amp; settings</a>
+    </nav>
+    <p class="side-note">Saved on this device only. Download a backup every week from <a href="#/settings">Backup&nbsp;&amp;&nbsp;settings</a>.</p>
+  </aside>
+
+  <div class="main">
+    <header class="top">
+      <div class="search" role="search">
+        <input type="search" placeholder="Search products, customers, suppliers or sale numbers" aria-label="Search everything" data-search autocomplete="off">
+        <div class="search-results" data-search-results hidden></div>
+      </div>
+      <label class="staff">Staff on duty
+        <input data-staff placeholder="Your name" autocomplete="off">
+      </label>
+    </header>
+    <main class="view" id="view" tabindex="-1"></main>
+  </div>
+</div>
+
+<dialog class="modal" data-modal>
+  <form method="dialog" class="modal-inner" data-modal-form novalidate>
+    <header class="modal-head">
+      <h2 data-modal-title></h2>
+      <button type="button" class="icon-btn" data-modal-close aria-label="Close">✕</button>
+    </header>
+    <div class="modal-body" data-modal-body></div>
+    <footer class="modal-foot" data-modal-foot></footer>
+  </form>
+</dialog>
+
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+<div id="print-area" aria-hidden="true"></div>
+
+<script src="../assets/js/catalog.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
