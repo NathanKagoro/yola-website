@@ -18,6 +18,7 @@ Please confirm these, which weren't in the price list:
 - **Candle lover gift box** and **waterless mini machine** prices
 - The seven mini machine finish names (read from a photo)
 - The scent library list (taken from labels in the photos: Rose Oud, Freesia & Pears, Peppermint & Eucalyptus, Neroli, Juicy, Relaxing)
+- The mood, description and "lovely in" rooms for each scent in the scent wardrobe (`scentProfiles` in `catalog.js`) — written from the scent names
 
 ## Using the inventory tool
 

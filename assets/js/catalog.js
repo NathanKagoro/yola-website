@@ -11,6 +11,23 @@ window.YOLA = {
 
   scents: ["Rose Oud", "Freesia & Pears", "Peppermint & Eucalyptus", "Neroli", "Juicy", "Relaxing"],
 
+  /* The scent wardrobe on the website. Descriptions are written from the scent names — have the team check them.
+     bg/fg/accent colour the section while a scent is selected. */
+  scentProfiles: [
+    { name: "Rose Oud", mood: "Warm & sensual", desc: "Velvet rose over smoky, resinous oud. Deep and lingering — for evenings, lounges and bedrooms.",
+      rooms: "Lounges, bedrooms, hotel suites", bg: "#3B1419", fg: "#F4ECE2", accent: "#D9A3B4" },
+    { name: "Freesia & Pears", mood: "Fresh & floral", desc: "Crisp pear and airy freesia. Light and clean enough to wear every day.",
+      rooms: "Living rooms, offices, receptions", bg: "#E6E2C4", fg: "#2E2A12", accent: "#7A7A2E" },
+    { name: "Peppermint & Eucalyptus", mood: "Energising", desc: "Cool mint and green eucalyptus that wake a room up and clear the air.",
+      rooms: "Offices, gyms, bathrooms", bg: "#CFE2D6", fg: "#183428", accent: "#2F6B4F" },
+    { name: "Neroli", mood: "Bright & sunny", desc: "Orange blossom, bright and clean, like an open window in the morning.",
+      rooms: "Kitchens, entrances, boutiques", bg: "#F3D6A0", fg: "#3A2408", accent: "#A8641A" },
+    { name: "Juicy", mood: "Sweet & playful", desc: "A ripe, juicy fruit blend that feels like a treat. A favourite for gifting.",
+      rooms: "Bedrooms, boutiques, gift boxes", bg: "#F1BFD0", fg: "#4A1027", accent: "#C0306F" },
+    { name: "Relaxing", mood: "Calm", desc: "Soft and soothing, made for slowing down at the end of the day.",
+      rooms: "Bedrooms, spas, bathrooms", bg: "#D9D0EA", fg: "#2A2140", accent: "#6A58A0" }
+  ],
+
   /* Home fragrance collection */
   products: [
     {
