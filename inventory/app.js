@@ -869,7 +869,7 @@
       toast("Backup downloaded"); routes.settings();
     }
     if (e.target.closest("[data-demo]")) confirmBox("Load demo data?", "This replaces all products, sales, customers and suppliers on this device with sample data.", "Load demo data", function () { db = demoData(); save(); toast("Demo data loaded"); location.hash = "#/home"; rerender(); }, true);
-    if (e.target.closest("[data-reset]")) confirmBox("Start fresh?", "This deletes every sale, customer, supplier and stock count on this device and restores the YOLA product list with zero stock. Download a backup first if you might need the records.", "Delete everything and start fresh", function () { db = fresh(); save(); toast("Started fresh"); location.hash = "#/home"; rerender(); }, true);
+    if (e.target.closest("[data-reset]")) confirmBox("Start fresh?", "This deletes every sale, customer, supplier and stock count on this device and restores the YOLA product list with zero stock. Download a backup first if you might need the records.", "Delete everything and start fresh", function () { db = fresh(); db.startedFresh = true; save(); toast("Started fresh"); location.hash = "#/home"; rerender(); }, true);
   });
   view.addEventListener("change", function (e) {
     if (!e.target.matches("[data-restore]")) return;
@@ -1174,7 +1174,11 @@
   var firstVisit = true;
   try { firstVisit = !localStorage.getItem(KEY); } catch (e) {}
   load();
-  if (firstVisit && DEMO_ON_FIRST_VISIT) db = demoData();
-  if (firstVisit) save();
+  /* Also covers browsers that opened an earlier version and saved an empty copy:
+     if nothing has ever been entered (and nobody chose "Start fresh"), show the demo. */
+  var untouched = !db.demo && !db.startedFresh && !db.sales.length && !db.customers.length && !db.suppliers.length &&
+    !db.purchases.length && db.products.every(function (p) { return !p.stock; });
+  if (DEMO_ON_FIRST_VISIT && (firstVisit || untouched)) { db = demoData(); save(); }
+  else if (firstVisit) save();
   go();
 })();
