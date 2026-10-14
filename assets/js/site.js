@@ -98,9 +98,14 @@
     $$("[data-sp]", panel).forEach(function (im) { im.classList.toggle("on", +im.dataset.sp === i); });
     $("[data-sp-name]", panel).textContent = s.name;
     var txt = $(".scent-text", panel);
-    txt.innerHTML = "<h3>" + esc(s.name) + '</h3><p class="mood">' + esc(s.mood) + '</p><p class="desc">' + esc(s.desc) + '</p><p class="rooms">Lovely in: ' + esc(s.rooms) + "</p>" +
+    txt.innerHTML = "<h3>" + esc(s.name) + '</h3><p class="mood">' + esc(s.mood) + '</p><p class="desc">' + esc(s.desc) + '</p><p class="rooms m-hide">Lovely in: ' + esc(s.rooms) + "</p>" +
       '<button type="button" class="btn" data-shop-scent="' + esc(s.name) + '">Shop ' + esc(s.name) + "</button>";
     txt.classList.remove("swap"); void txt.offsetWidth; txt.classList.add("swap");
+    /* on phones the scent names are a sideways row: keep the active one in view without moving the page */
+    if (tabs.scrollWidth > tabs.clientWidth + 4) {
+      var li = tabs.children[i];
+      tabs.scrollTo({ left: li.offsetLeft - (tabs.clientWidth - li.offsetWidth) / 2, behavior: reduce ? "auto" : "smooth" });
+    }
   }
   /* Until someone touches it, the wardrobe plays through the scents by itself so the colour change is obvious. */
   var AUTO_MS = 3000, autoTimer = null, autoIdx = 0, userTook = false;
@@ -196,7 +201,7 @@
     return '<article class="product" data-id="' + p.id + '">' +
       '<div class="product-img"><div class="frame"><img src="' + p.img + '" alt="' + esc(p.alt) + '" loading="lazy"></div>' +
       '<div class="label" aria-hidden="true"><span class="label-brand">YOLA</span><span class="label-scent">' + esc(p.tag) + "</span></div></div>" +
-      '<p class="cat">' + esc(p.category) + "</p><h3>" + esc(p.name) + '</h3><p class="blurb">' + esc(p.blurb) + "</p>" +
+      '<p class="cat">' + esc(p.category) + "</p><h3>" + esc(p.name) + '</h3><p class="blurb m-hide">' + esc(p.blurb) + "</p>" +
       (p.sizes.length > 1 ? '<fieldset class="sizes"><legend>Size</legend>' + sizes + "</fieldset>" : "") +
       scent + colour +
       '<div class="buy"><span class="price" data-price></span><div class="buy-actions" data-actions></div></div></article>';

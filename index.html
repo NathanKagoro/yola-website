@@ -11,8 +11,8 @@
   <meta property="og:image" content="assets/img/showroom-shelves.jpg">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2343251F'/%3E%3Ctext x='32' y='42' font-family='Futura,Arial' font-size='26' font-weight='600' fill='white' text-anchor='middle'%3EY%3C/text%3E%3C/svg%3E">
   <link rel="preload" href="assets/fonts/bodoni-moda-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/fonts.css?v=202610140824">
-  <link rel="stylesheet" href="assets/css/site.css?v=202610140824">
+  <link rel="stylesheet" href="assets/css/fonts.css?v=202610140840">
+  <link rel="stylesheet" href="assets/css/site.css?v=202610140840">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -69,7 +69,7 @@
       <div class="wardrobe-head">
         <h2 id="wardrobe-title">Choose a scent the way you'd choose a mood.</h2>
         <div>
-          <p>Every YOLA candle, spray, diffuser and refill oil comes from the same scent library. Pick one to see where it belongs.</p>
+          <p class="m-hide">Every YOLA candle, spray, diffuser and refill oil comes from the same scent library. Pick one to see where it belongs.</p>
           <p class="wardrobe-hint" data-wardrobe-hint><span class="hint-dots" aria-hidden="true"><i></i><i></i><i></i></span><span data-hint-text>Tap a scent and the room changes with it.</span></p>
         </div>
       </div>
@@ -84,7 +84,7 @@
   <section class="collection" id="collection" aria-labelledby="col-title">
     <div class="col-head">
       <h2 id="col-title">The collection</h2>
-      <div><p>Pick a size and scent, add to your bag, and send the order on WhatsApp. We'll confirm stock, delivery and payment in the chat.</p><p class="swipe-hint">Swipe to see all six pieces</p></div>
+      <div><p class="m-hide">Pick a size and scent, add to your bag, and send the order on WhatsApp. We'll confirm stock, delivery and payment in the chat.</p><p class="m-only">Order on WhatsApp; we'll confirm delivery in the chat.</p><p class="swipe-hint">Swipe to see all six pieces</p></div>
     </div>
     <div class="product-grid" data-products></div>
   </section>
@@ -97,7 +97,7 @@
     </div>
     <div class="mini-copy">
       <h2 id="mini-title">Seven colours. One cup holder.</h2>
-      <p>The waterless mini machine is our best seller and it rarely stays in stock. Made for cars, closets and other small enclosed spaces, and it travels with you.</p>
+      <p class="m-hide">The waterless mini machine is our best seller and it rarely stays in stock. Made for cars, closets and other small enclosed spaces, and it travels with you.</p><p class="m-only">Our best seller, made for cars and small spaces.</p>
       <div class="swatches" role="radiogroup" aria-label="Choose a finish" data-swatches>
         <button type="button" role="radio" aria-checked="false" style="--sw:#B3192F" data-colour="Red" data-img="assets/img/mini-red.jpg"><span>Red</span></button>
         <button type="button" role="radio" aria-checked="true" style="--sw:#D3A1B3" data-colour="Rose pink" data-img="assets/img/mini-rose-pink.jpg"><span>Rose pink</span></button>
@@ -117,11 +117,11 @@
     <div class="mach-head">
       <h2 id="mach-title">Scent is the part of your brand guests carry home.</h2>
       <div>
-        <p>Hotels, boutiques, offices, salons and showrooms: we match a scent to your brand and the right machine to your space, so the fragrance is even from the entrance to the last room.</p>
+        <p class="m-hide">Hotels, boutiques, offices, salons and showrooms: we match a scent to your brand and the right machine to your space, so the fragrance is even from the entrance to the last room.</p>
         <p class="gift">Every machine comes with a complimentary fragrance of your choice on first purchase.</p>
         <div class="mach-cta">
           <button class="btn btn-dark" type="button" data-ask="Hello YOLA, I'd like to book a site visit for scent marketing at my business.">Book a site visit</button>
-          <span>We measure, suggest a signature scent and install it.</span>
+          <span class="m-hide">We measure, suggest a signature scent and install it.</span>
         </div>
       </div>
     </div>
@@ -130,7 +130,7 @@
       <div class="finder-form">
         <div>
           <h3>How big is your space?</h3>
-          <p class="hint">Pick a typical space or enter its size in metres.</p>
+          <p class="hint m-hide">Pick a typical space or enter its size in metres.</p>
           <div class="presets" role="group" aria-label="Typical spaces">
             <button type="button" data-preset="4,4,3">Bedroom</button>
             <button type="button" data-preset="10,8,3">Boutique</button>
@@ -147,7 +147,7 @@
         <p class="volume" aria-live="polite"><span data-volume>240</span><span class="unit">m³</span><small data-match-text></small></p>
       </div>
       <div class="coverage" role="list" data-machines aria-label="Scent machines by coverage"></div>
-      <p class="axis-note">Each bar is the room volume a machine covers, from 100 to 6,000 m³. The pink line is your space.</p>
+      <p class="axis-note m-hide">Each bar is the room volume a machine covers, from 100 to 6,000 m³. The pink line is your space.</p>
     </div>
 
   </section>
@@ -159,7 +159,7 @@
     </figure>
     <div class="exp-copy">
       <h2 id="exp-title">Trade a bag for an apron.</h2>
-      <p class="exp-lede">It's written on our wall, and it's how every session starts: hang up your handbag, put on an apron, and make something you'll want to keep.</p>
+      <p class="exp-lede m-hide">It's written on our wall, and it's how every session starts: hang up your handbag, put on an apron, and make something you'll want to keep.</p>
       <dl class="exp-list">
         <div><dt>Candle &amp; perfume making</dt><dd>Blend your own scent and pour your own candle with our team. Birthdays, bridal parties and team days.</dd></div>
         <div><dt>Event scenting</dt><dd>A signature scent for weddings, launches, dinners and pop-ups.</dd></div>
@@ -185,7 +185,7 @@
     <figure class="visit-arch"><img src="assets/img/showroom-shelves.jpg" alt="Shelves of YOLA diffusers, sprays, oils and gift boxes in the Mikocheni showroom" loading="lazy"></figure>
     <form class="contact" data-contact novalidate>
       <h3>Or write to us</h3>
-      <p class="hint">Your message opens in WhatsApp, ready to send.</p>
+      <p class="hint m-hide">Your message opens in WhatsApp, ready to send.</p>
       <label>Your name<input name="name" autocomplete="name" required></label>
       <label>About
         <select name="topic">
@@ -230,7 +230,7 @@
 
 <div class="toast" data-toast role="status" aria-live="polite"></div>
 
-<script src="assets/js/catalog.js?v=202610140824"></script>
-<script src="assets/js/site.js?v=202610140824"></script>
+<script src="assets/js/catalog.js?v=202610140840"></script>
+<script src="assets/js/site.js?v=202610140840"></script>
 </body>
 </html>
