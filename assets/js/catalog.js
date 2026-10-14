@@ -1,4 +1,4 @@
-/* YOLA catalogue — single source of truth for the website and the inventory seed.
+/* YOLA catalogue: single source of truth for the website and the inventory seed.
    Prices are in Tanzanian shillings (TZS), taken from the YOLA Scent Marketing Solutions price list.
    price: null means "ask for price" on the website. */
 window.YOLA = {
@@ -11,10 +11,10 @@ window.YOLA = {
 
   scents: ["Rose Oud", "Freesia & Pears", "Peppermint & Eucalyptus", "Neroli", "Juicy", "Relaxing"],
 
-  /* The scent wardrobe on the website. Descriptions are written from the scent names — have the team check them.
+  /* The scent wardrobe on the website. Descriptions are written from the scent names; have the team check them.
      bg/fg/accent colour the section while a scent is selected. */
   scentProfiles: [
-    { name: "Rose Oud", img: "assets/img/scent-rose-oud.jpg", mood: "Warm & sensual", desc: "Velvet rose over smoky, resinous oud. Deep and lingering — for evenings, lounges and bedrooms.",
+    { name: "Rose Oud", img: "assets/img/scent-rose-oud.jpg", mood: "Warm & sensual", desc: "Velvet rose over smoky, resinous oud. Deep and lingering, for evenings, lounges and bedrooms.",
       rooms: "Lounges, bedrooms, hotel suites", bg: "#3B1419", fg: "#F4ECE2", accent: "#D9A3B4" },
     { name: "Freesia & Pears", img: "assets/img/scent-freesia-pears.jpg", mood: "Fresh & floral", desc: "Crisp pear and airy freesia. Light and clean enough to wear every day.",
       rooms: "Living rooms, offices, receptions", bg: "#E6E2C4", fg: "#2E2A12", accent: "#7A7A2E" },
@@ -78,7 +78,7 @@ window.YOLA = {
     },
     {
       id: "giftbox", name: "Candle lover gift box", category: "Gift sets",
-      img: "assets/img/candle-gift-box.jpg", alt: "Three YOLA soy candles — Neroli, Juicy and Relaxing — in an iridescent gift box",
+      img: "assets/img/candle-gift-box.jpg", alt: "Three YOLA soy candles (Neroli, Juicy and Relaxing) in an iridescent gift box",
       tag: "Neroli, Juicy, Relaxing",
       blurb: "Three soy candles wrapped in our iridescent box. Tell us who it's for and we'll help you pick.",
       scented: false,

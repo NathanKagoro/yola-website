@@ -296,7 +296,7 @@
   $("[data-checkout]").addEventListener("click", function () {
     if (!bag.length) return;
     var name = $("[data-order-name]").value.trim(), area = $("[data-order-area]").value.trim();
-    var lines = bag.map(function (b) { return "• " + b.qty + " × " + b.name + (b.detail ? " (" + b.detail + ")" : "") + " — " + tzs(b.qty * b.price); });
+    var lines = bag.map(function (b) { return "• " + b.qty + " × " + b.name + (b.detail ? " (" + b.detail + ")" : "") + ": " + tzs(b.qty * b.price); });
     var total = bag.reduce(function (n, b) { return n + b.qty * b.price; }, 0);
     wa("Hello YOLA, I'd like to place an order:\n" + lines.join("\n") + "\nTotal: " + tzs(total) +
       (name ? "\nName: " + name : "") + (area ? "\nDelivery / pickup: " + area : ""));

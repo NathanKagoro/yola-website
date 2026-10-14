@@ -1,4 +1,4 @@
-/* YOLA Inventory — calm, high-contrast, big touch targets */
+/* YOLA Inventory: calm, high-contrast, big touch targets */
 :root {
   --paper: #FAF9FB; --panel: #FFFFFF; --mist: #F1EDF4; --ink: #2B1916; --muted: #6E5D59;
   --cocoa: #43251F; --cocoa-2: #5A3329; --lilac: #DCD3EB; --lilac-deep: #7B6AA3; --ribbon: #D2408A;
@@ -86,6 +86,7 @@ form.stack { display: grid; }
 
 /* ---------- home ---------- */
 .callout { display: flex; gap: 24px; align-items: center; justify-content: space-between; background: var(--lilac); border-radius: var(--r); padding: 20px 24px; margin-bottom: 20px; }
+.callout-demo { background: #FBEFD2; }
 .callout h3 { font-size: 1.1rem; margin-bottom: 4px; }
 .callout p { margin: 0; max-width: 70ch; }
 .callout-bad { background: var(--out-bg); color: var(--out); padding: 12px 14px; border-radius: 10px; }

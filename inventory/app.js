@@ -1,4 +1,4 @@
-/* YOLA Inventory — a small, offline-first stock, sales, customer and supplier tracker.
+/* YOLA Inventory: a small, offline-first stock, sales, customer and supplier tracker.
    Everything is stored in this browser (localStorage). Use Backup & settings to download copies. */
 (function () {
   "use strict";
@@ -166,7 +166,7 @@
     var name = routes[parts[0]] ? parts[0] : "home";
     $$("[data-route]").forEach(function (a) { a.classList.toggle("active", a.dataset.route === name); if (a.dataset.route === name) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
     routes[name](parts.slice(1));
-    document.title = (name === "home" ? "" : $('[data-route="' + name + '"]').lastChild.textContent.trim() + " — ") + "YOLA Inventory";
+    document.title = (name === "home" ? "" : $('[data-route="' + name + '"]').lastChild.textContent.trim() + " | ") + "YOLA Inventory";
   }
   window.addEventListener("hashchange", function () { go(); view.focus({ preventScroll: true }); window.scrollTo(0, 0); });
   function rerender() { go(); }
@@ -186,7 +186,8 @@
 
     view.innerHTML =
       '<div class="page-head"><h1>' + greeting + '</h1><p class="sub">' + new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" }) + "</p></div>" +
-      (noStockYet ? '<div class="callout"><div><h3>Start by entering your stock</h3><p>The YOLA product list is already here. Use <b>Receive stock</b> to add what you have on the shelves, or open <b>Stock</b> and set counts one by one. Want to practise first? Load the practice data in <a href="#/settings">Backup &amp; settings</a>.</p></div><a class="btn btn-main" href="#/receive">Receive stock</a></div>' : "") +
+      (db.demo ? '<div class="callout callout-demo"><div><h3>You\'re exploring demo data</h3><p>Four months of made-up sales, customers and suppliers so you can try everything: record a sale, receive stock, search, run reports. Nothing here is real. When YOLA is ready to use it, go to <b>Backup &amp; settings</b> and choose <b>Start fresh</b>.</p></div><a class="btn" href="#/settings">Backup &amp; settings</a></div>' : "") +
+      (noStockYet ? '<div class="callout"><div><h3>Start by entering your stock</h3><p>The YOLA product list is already here. Use <b>Receive stock</b> to add what you have on the shelves, or open <b>Stock</b> and set counts one by one. Want to practise first? Load the demo data in <a href="#/settings">Backup &amp; settings</a>.</p></div><a class="btn btn-main" href="#/receive">Receive stock</a></div>' : "") +
       '<div class="actions">' +
         '<a class="action action-main" href="#/sell"><b>New sale</b><span>Record what a customer bought</span></a>' +
         '<a class="action" href="#/receive"><b>Receive stock</b><span>Add a delivery from a supplier</span></a>' +
@@ -245,7 +246,7 @@
   function drawCart() {
     var box = $("[data-cart]"); if (!box) return;
     var subtotal = state.cart.reduce(function (n, c) { return n + c.qty * c.price; }, 0);
-    var custOpts = [{ v: "", t: "Walk-in customer (no details)" }].concat(db.customers.slice().sort(function (a, b) { return a.name.localeCompare(b.name); }).map(function (c) { return { v: c.id, t: c.name + (c.phone ? " — " + c.phone : "") }; }));
+    var custOpts = [{ v: "", t: "Walk-in customer (no details)" }].concat(db.customers.slice().sort(function (a, b) { return a.name.localeCompare(b.name); }).map(function (c) { return { v: c.id, t: c.name + (c.phone ? ", " + c.phone : "") }; }));
     box.innerHTML = '<h2>This sale</h2>' +
       (state.cart.length ? '<ul class="cart-lines">' + state.cart.map(function (c, i) {
         var p = product(c.productId);
@@ -358,7 +359,7 @@
     var phone = c && c.phone ? c.phone.replace(/\D/g, "").replace(/^0/, "255") : "";
     var body = (s.void ? '<p class="callout-bad">This sale was voided' + (s.voidReason ? ": " + esc(s.voidReason) : "") + ". Its stock was returned.</p>" : "") +
       receiptHTML(s) +
-      '<dl class="facts"><div><dt>Sold through</dt><dd>' + esc(s.channel) + "</dd></div><div><dt>Recorded by</dt><dd>" + esc(s.by || "—") + "</dd></div>" + (s.note ? "<div><dt>Note</dt><dd>" + esc(s.note) + "</dd></div>" : "") +
+      '<dl class="facts"><div><dt>Sold through</dt><dd>' + esc(s.channel) + "</dd></div><div><dt>Recorded by</dt><dd>" + esc(s.by || "Not recorded") + "</dd></div>" + (s.note ? "<div><dt>Note</dt><dd>" + esc(s.note) + "</dd></div>" : "") +
       (s.payments && s.payments.length > 1 ? "<div><dt>Payments</dt><dd>" + s.payments.map(function (p) { return money(p.amount) + " by " + esc(p.method) + " on " + fmtDate(p.date); }).join("<br>") + "</dd></div>" : "") + "</dl>";
     var extra = (!s.void && owe ? '<button type="button" class="btn" data-pay-sale>Record payment</button>' : "") +
       '<button type="button" class="btn" data-print-sale>Print receipt</button>' +
@@ -369,7 +370,7 @@
       var pb = $("[data-print-sale]", foot); if (pb) pb.onclick = function () { printReceipt(s); };
       var wb = $("[data-wa-sale]", foot); if (wb) wb.onclick = function () {
         var text = "Hello " + c.name + ", thank you for shopping at YOLA.\nReceipt #" + s.no + " (" + fmtDate(s.date) + ")\n" +
-          s.items.map(function (i) { return i.qty + " × " + i.name + " — " + money(i.qty * i.price); }).join("\n") +
+          s.items.map(function (i) { return i.qty + " × " + i.name + ": " + money(i.qty * i.price); }).join("\n") +
           (s.discount ? "\nDiscount: −" + money(s.discount) : "") + "\nTotal: " + money(s.total) + (balance(s) ? "\nBalance due: " + money(balance(s)) : "");
         window.open("https://wa.me/" + phone + "?text=" + encodeURIComponent(text), "_blank", "noopener");
       };
@@ -497,7 +498,7 @@
       '<table class="tbl"><thead><tr><th>Product</th><th>Code</th><th>Category</th><th class="num">Price</th><th class="num">Cost</th><th>Stock</th><th class="num">Reorder at</th><th><span class="sr">Actions</span></th></tr></thead><tbody>' +
       list.map(function (p) {
         return '<tr class="' + (p.active ? "" : "inactive") + '"><td><button type="button" class="link-btn" data-adjust="' + p.id + '">' + esc(pname(p)) + "</button>" + (p.active ? "" : ' <span class="tag">Hidden</span>') + "</td><td>" + esc(p.sku) + "</td><td>" + esc(p.category) +
-          '</td><td class="num">' + (p.price ? money(p.price) : '<span class="warn">Set price</span>') + '</td><td class="num">' + (p.cost ? money(p.cost) : "—") + "</td><td>" + stockBadge(p) + '</td><td class="num">' + p.reorder +
+          '</td><td class="num">' + (p.price ? money(p.price) : '<span class="warn">Set price</span>') + '</td><td class="num">' + (p.cost ? money(p.cost) : "-") + "</td><td>" + stockBadge(p) + '</td><td class="num">' + p.reorder +
           '</td><td class="row-actions"><button type="button" class="btn btn-small" data-adjust="' + p.id + '">Count</button><button type="button" class="btn btn-small btn-quiet" data-edit-product="' + p.id + '">Edit</button><button type="button" class="btn btn-small btn-quiet" data-history="' + p.id + '">History</button></td></tr>';
       }).join("") + "</tbody></table>" +
       '<p class="table-foot">' + plural(list.length, "product") + " shown. Stock on hand is worth " + money(valueRetail) + " at selling price" + (valueCost ? " and " + money(valueCost) + " at cost" : "") + ".</p>"
@@ -560,7 +561,7 @@
         if (d.qty === "" || q < 0) return "Enter a number (0 or more).";
         var delta = d.mode === "set" ? q - p.stock : d.mode === "remove" ? -q : q;
         if (p.stock + delta < 0) return "That would make stock negative. There are only " + p.stock + ".";
-        if (!delta) { toast("No change — count matches"); return; }
+        if (!delta) { toast("No change: the count matches"); return; }
         move(p.id, delta, "Adjustment", "", d.reason + (d.note ? ": " + d.note : ""));
         save(); toast(pname(p) + " now " + p.stock); rerender();
       } });
@@ -648,7 +649,7 @@
       '<table class="tbl"><thead><tr><th>Name</th><th>Phone</th><th>Type</th><th>Area</th><th class="num">Purchases</th><th class="num">Spent</th><th class="num">Owes</th><th>Last bought</th></tr></thead><tbody>' +
       list.map(function (r) { var c = r.c, s = r.s;
         return '<tr><td><button type="button" class="link-btn" data-customer="' + c.id + '">' + esc(c.name) + "</button></td><td>" + esc(c.phone) + "</td><td>" + esc(c.type) + "</td><td>" + esc(c.area) +
-          '</td><td class="num">' + s.count + '</td><td class="num">' + money(s.spent) + '</td><td class="num">' + (s.owed ? '<span class="warn">' + money(s.owed) + "</span>" : "—") + "</td><td>" + (s.last ? fmtDate(s.last) : "—") + "</td></tr>"; }).join("") + "</tbody></table>"
+          '</td><td class="num">' + s.count + '</td><td class="num">' + money(s.spent) + '</td><td class="num">' + (s.owed ? '<span class="warn">' + money(s.owed) + "</span>" : "-") + "</td><td>" + (s.last ? fmtDate(s.last) : "Not yet") + "</td></tr>"; }).join("") + "</tbody></table>"
       : empty(db.customers.length ? "No customers match" : "No customers yet", db.customers.length ? "Try a different name or number." : "Add customers here or while recording a sale.", db.customers.length ? "" : '<button type="button" class="btn btn-main" data-new-customer>Add customer</button>');
   }
   view.addEventListener("input", function (e) { if (e.target.matches("[data-cust-q]")) { state.custQ = e.target.value; drawCustomers(); } });
@@ -684,7 +685,7 @@
     var sales = db.sales.filter(function (x) { return x.customerId === id; }).slice().reverse();
     var phone = c.phone ? c.phone.replace(/\D/g, "").replace(/^0/, "255") : "";
     openModal(c.name,
-      '<div class="kpis small">' + kpi("Spent", money(s.spent), plural(s.count, "purchase")) + kpi("Owes", money(s.owed), s.owed ? "Unpaid balance" : "Nothing owed") + kpi("Last bought", s.last ? fmtDate(s.last) : "—", "") + "</div>" +
+      '<div class="kpis small">' + kpi("Spent", money(s.spent), plural(s.count, "purchase")) + kpi("Owes", money(s.owed), s.owed ? "Unpaid balance" : "Nothing owed") + kpi("Last bought", s.last ? fmtDate(s.last) : "Not yet", "") + "</div>" +
       '<dl class="facts">' + [["Phone", c.phone], ["Type", c.type], ["Area", c.area], ["Email", c.email], ["Birthday", c.birthday ? fmtDate(c.birthday) : ""], ["Favourite scents", c.scents], ["Notes", c.notes]]
         .filter(function (f) { return f[1]; }).map(function (f) { return "<div><dt>" + f[0] + "</dt><dd>" + esc(f[1]) + "</dd></div>"; }).join("") + "</dl>" +
       "<h3 class=\"mt\">Purchases</h3>" + (sales.length ? '<ul class="list">' + sales.map(saleRow).join("") + "</ul>" : "<p class=\"muted\">No purchases yet.</p>"),
@@ -816,7 +817,7 @@
         kpi("Sales", money(revenue), plural(sales.length, "sale") + (sales.length ? ", average " + money(revenue / sales.length) : "")) +
         kpi("Money received", money(paid), revenue - paid > 0 ? money(revenue - paid) + " still owed" : "Nothing owed") +
         kpi("Items sold", String(items), Object.keys(byProd).length + " different products") +
-        kpi("Gross profit", cogs ? money(revenue - cogs) : "—", cogs ? (costKnown ? "Sales minus cost of goods" : "Some products have no cost price") : "Add cost prices to see profit") +
+        kpi("Gross profit", cogs ? money(revenue - cogs) : "Not set", cogs ? (costKnown ? "Sales minus cost of goods" : "Some products have no cost price") : "Add cost prices to see profit") +
       "</div>" +
       (days.length > 1 ? '<section class="panel"><div class="panel-head"><h2>Sales by day</h2></div><div class="daychart" role="img" aria-label="Sales by day">' +
         days.map(function (d) { return '<div class="day" title="' + fmtDate(d) + ": " + money(byDay[d]) + '"><i style="height:' + Math.max(2, byDay[d] / dayMax * 100) + '%"></i></div>'; }).join("") +
@@ -837,7 +838,7 @@
   routes.settings = function () {
     var last = db.settings.lastBackup;
     view.innerHTML =
-      '<div class="page-head"><h1>Backup &amp; settings</h1><p class="sub">Your records are saved in this browser on this device. If the browser data is cleared or the device is lost, the records go with it — so download a backup regularly.</p></div>' +
+      '<div class="page-head"><h1>Backup &amp; settings</h1><p class="sub">Your records are saved in this browser on this device. If the browser data is cleared or the device is lost, the records go with it, so download a backup regularly.</p></div>' +
       '<div class="cols">' +
       '<section class="panel"><div class="panel-head"><h2>Backup</h2></div>' +
         "<p>" + (last ? "Last backup downloaded on <b>" + fmtDate(last) + "</b>." : "<b>You haven't downloaded a backup yet.</b>") + "</p>" +
@@ -851,8 +852,8 @@
         field("Business name", "business", db.settings.business) + field("Address", "address", db.settings.address) + field("Phone", "phone", db.settings.phone) +
         '<button type="submit" class="btn btn-main">Save receipt details</button></form></section>' +
       '<section class="panel"><div class="panel-head"><h2>Practice and reset</h2></div>' +
-        "<p>Training someone new? Load sample customers, suppliers and three months of sales to practise on. It replaces what's here, so download a backup first.</p>" +
-        '<div class="stack"><button type="button" class="btn" data-demo>Load practice data</button><button type="button" class="btn btn-quiet danger-text" data-reset>Start fresh with the YOLA product list</button></div></section>' +
+        "<p>Training someone new? Load made-up customers, suppliers and four months of sales to practise on. It replaces what's here, so download a backup first.</p>" +
+        '<div class="stack"><button type="button" class="btn" data-demo>Load demo data</button><button type="button" class="btn btn-quiet danger-text" data-reset>Start fresh with the YOLA product list</button></div></section>' +
       "</div>";
   };
   view.addEventListener("submit", function (e) {
@@ -867,7 +868,7 @@
       download("yola-inventory-backup-" + today() + ".json", JSON.stringify(db, null, 1), "application/json");
       toast("Backup downloaded"); routes.settings();
     }
-    if (e.target.closest("[data-demo]")) confirmBox("Load practice data?", "This replaces all products, sales, customers and suppliers on this device with sample data.", "Load practice data", function () { db = demoData(); save(); toast("Practice data loaded"); location.hash = "#/home"; rerender(); }, true);
+    if (e.target.closest("[data-demo]")) confirmBox("Load demo data?", "This replaces all products, sales, customers and suppliers on this device with sample data.", "Load demo data", function () { db = demoData(); save(); toast("Demo data loaded"); location.hash = "#/home"; rerender(); }, true);
     if (e.target.closest("[data-reset]")) confirmBox("Start fresh?", "This deletes every sale, customer, supplier and stock count on this device and restores the YOLA product list with zero stock. Download a backup first if you might need the records.", "Delete everything and start fresh", function () { db = fresh(); save(); toast("Started fresh"); location.hash = "#/home"; rerender(); }, true);
   });
   view.addEventListener("change", function (e) {
@@ -918,7 +919,7 @@
     db.sales.slice().reverse().forEach(function (s) {
       var c = customer(s.customerId);
       if (String(s.no) === qn || (c && lower(c.name).indexOf(q) > -1 && hits.filter(function (h) { return h.g === "Sales"; }).length < 5))
-        hits.push({ g: "Sales", t: "Sale #" + s.no + " — " + (c ? c.name : "Walk-in"), s: fmtDate(s.date) + " · " + money(s.total) + (s.void ? " · voided" : ""), a: function () { showSale(s.id); } });
+        hits.push({ g: "Sales", t: "Sale #" + s.no + ": " + (c ? c.name : "Walk-in"), s: fmtDate(s.date) + " · " + money(s.total) + (s.void ? " · voided" : ""), a: function () { showSale(s.id); } });
     });
     var groups = {}; hits.forEach(function (h) { (groups[h.g] = groups[h.g] || []).push(h); });
     var flat = [];
@@ -951,54 +952,229 @@
   staffInput.value = staff();
   staffInput.addEventListener("change", function () { try { localStorage.setItem("yola-staff", staffInput.value.trim()); } catch (e) {} if (location.hash === "#/home" || !location.hash) rerender(); });
 
-  /* ================= practice data ================= */
+  /* ================= demo / practice data =================
+     A realistic, made-up four months of trading so the tool can be shown off and practised on.
+     Every name, phone number and supplier here is fictional. */
   function demoData() {
     var d = fresh();
-    var rnd = (function (seed) { return function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; })(42);
+    d.demo = true;
+    var rnd = (function (seed) { return function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; })(20261014);
     var pick = function (a) { return a[Math.floor(rnd() * a.length)]; };
+    var chance = function (p) { return rnd() < p; };
+    var STAFF = ["Neema", "Rehema", "Baraka"];
+
+    /* suppliers */
+    var sup = function (name, contact, phone, country, supplies, lead, terms) {
+      return { id: uid("su"), name: name, contact: contact, phone: phone, email: "", country: country, supplies: supplies, lead: lead, terms: terms, notes: "Demo supplier" };
+    };
     d.suppliers = [
-      { id: uid("su"), name: "Aroma Oils Trading (sample)", contact: "Fatma", phone: "0700 000 001", email: "", country: "Dubai", supplies: "Fragrance oils", lead: "3 weeks", terms: "50% upfront", notes: "Practice data" },
-      { id: uid("su"), name: "Glassworks Supplies (sample)", contact: "Peter", phone: "0700 000 002", email: "", country: "Dar es Salaam", supplies: "Bottles, jars, reeds", lead: "1 week", terms: "Cash on delivery", notes: "Practice data" },
-      { id: uid("su"), name: "ScentTech Machines (sample)", contact: "Lin", phone: "0700 000 003", email: "", country: "China", supplies: "Scent machines, mini machines", lead: "6 weeks", terms: "Full payment upfront", notes: "Practice data" }
+      sup("Gulf Aroma Oils", "Fatma Al Noor", "0700 000 101", "Dubai, UAE", "Fragrance oils, diffuser bases", "3 weeks", "50% upfront, 50% on shipping"),
+      sup("Harbour Glass & Packaging", "Peter Mushi", "0700 000 102", "Dar es Salaam", "Bottles, jars, reeds, candle vessels", "1 week", "Cash on delivery"),
+      sup("Pearl River ScentTech", "Lin Wei", "0700 000 103", "Guangzhou, China", "Scent machines, mini machines", "6 weeks", "Full payment upfront"),
+      sup("Sokoni Wax Supplies", "Juma Said", "0700 000 104", "Arusha", "Soy wax, wicks", "10 days", "Net 14 days"),
+      sup("Ribbon & Box Studio", "Asha Ally", "0700 000 105", "Dar es Salaam", "Gift boxes, YOLA ribbon, tissue, labels", "2 weeks", "Cash on delivery")
     ];
-    var names = ["Amina Juma", "Neema Mushi", "Baraka Mollel", "Rehema Said", "Joseph Mrema", "Zawadi Kimaro", "Halima Omari", "Grace Lyimo", "Hotel Example Ltd", "Office Example Co"];
-    d.customers = names.map(function (n, i) { return { id: uid("c"), name: n + " (sample)", phone: "07" + String(10000000 + i * 1234567).slice(0, 8), email: "", type: i >= 8 ? (i === 8 ? "Hotel" : "Office") : "Individual", area: pick(["Masaki", "Mikocheni", "Oysterbay", "Mbezi", "Kinondoni", "Upanga"]), birthday: "", scents: pick(window.YOLA.scents), notes: "Practice data", created: new Date().toISOString() }; });
-    var supFor = function (p) { return p.category === "Fragrance oils" ? d.suppliers[0].id : /machine/i.test(p.category) ? d.suppliers[2].id : d.suppliers[1].id; };
+    var S = { oils: d.suppliers[0].id, glass: d.suppliers[1].id, tech: d.suppliers[2].id, wax: d.suppliers[3].id, box: d.suppliers[4].id };
+
+    /* products: the real catalogue, expanded into the scents and finishes a shop would stock */
+    var SCENTS = {
+      "Reed diffusers": [["Rose Oud", "RO"], ["Freesia & Pears", "FP"], ["Relaxing", "RX"]],
+      "Room & linen sprays": [["Peppermint & Eucalyptus", "PE"], ["Rose Oud", "RO"], ["Neroli", "NE"]],
+      "Candles": [["Relaxing", "RX"], ["Neroli", "NE"], ["Juicy", "JU"]],
+      "Fragrance oils": [["Rose Oud", "RO"], ["Freesia & Pears", "FP"], ["Peppermint & Eucalyptus", "PE"]]
+    };
+    var FILL = { "RD-200": 140000, "GB-CANDLE3": 190000, "MM-1": 180000, "AC-CLOCHE": 45000, "AC-LIGHTER": 25000 };
+    var supFor = function (p) {
+      return p.category === "Fragrance oils" ? S.oils : /machine/i.test(p.category) ? S.tech : p.category === "Candles" ? S.wax :
+        p.category === "Gift sets" ? S.box : S.glass;
+    };
+    var list = [];
     d.products.forEach(function (p) {
-      p.price = p.price || (p.category === "Mini machines" ? 180000 : p.category === "Gift sets" ? 190000 : p.category === "Accessories" ? 25000 : 140000);
-      p.cost = Math.round(p.price * (0.35 + rnd() * 0.15) / 1000) * 1000; p.supplierId = supFor(p);
+      p.price = p.price || FILL[p.sku] || 0;
+      if (SCENTS[p.category]) {
+        SCENTS[p.category].forEach(function (sc) {
+          var c = JSON.parse(JSON.stringify(p)); c.id = uid("p"); c.scent = sc[0]; c.sku = p.sku + "-" + sc[1]; list.push(c);
+        });
+      } else if (p.sku === "MM-1") {
+        [["Rose pink", "PK"], ["Gold", "GD"], ["Matte black", "BK"], ["Silver", "SV"]].forEach(function (f) {
+          var c = JSON.parse(JSON.stringify(p)); c.id = uid("p"); c.size = f[0]; c.sku = "MM-" + f[1]; list.push(c);
+        });
+      } else list.push(p);
     });
-    var start = new Date(); start.setDate(start.getDate() - 90);
-    var addMove = function (p, q, type, ref, date) { p.stock += q; d.movements.push({ id: uid("m"), date: date, productId: p.id, qty: q, type: type, ref: ref, reason: "", by: "Practice", after: p.stock }); };
-    d.products.forEach(function (p) {
-      var q = p.category === "Scent machines" ? 4 : p.category === "Mini machines" ? 20 : 30;
-      var pu = { id: uid("pu"), date: start.toISOString(), supplierId: p.supplierId, note: "Opening stock (practice)", by: "Practice", items: [{ productId: p.id, name: pname(p), qty: q, cost: p.cost }], total: q * p.cost };
-      d.purchases.push(pu); addMove(p, q, "Received", "Opening stock", start.toISOString());
+    list.forEach(function (p) {
+      p.cost = Math.round(p.price * (0.34 + rnd() * 0.12) / 1000) * 1000;
+      p.supplierId = supFor(p);
+      p.reorder = p.category === "Scent machines" ? 1 : p.category === "Mini machines" ? 3 : p.category === "Accessories" ? 3 : 4;
     });
-    var popular = d.products.filter(function (p) { return /Candles|sprays|diffusers|Mini|oils/.test(p.category); });
-    for (var day = 0; day < 90; day++) {
-      var n = Math.floor(rnd() * 3);
-      for (var k = 0; k < n; k++) {
-        var dt = new Date(start); dt.setDate(start.getDate() + day); dt.setHours(10 + Math.floor(rnd() * 8), Math.floor(rnd() * 60));
-        var p = rnd() < 0.08 ? pick(d.products) : pick(popular);
-        if (p.stock < 2) continue;
-        var q = 1 + (rnd() < 0.2 ? 1 : 0);
-        var total = q * p.price;
-        var owe = rnd() < 0.08;
-        var s = { id: uid("s"), no: d.nextSaleNo++, date: dt.toISOString(), customerId: rnd() < 0.7 ? pick(d.customers).id : "", items: [{ productId: p.id, name: pname(p), qty: q, price: p.price, cost: p.cost }],
-          subtotal: total, discount: 0, total: total, paid: owe ? Math.round(total / 2) : total, payment: pick(["Cash", "M-Pesa", "M-Pesa", "Mixx by Yas", "Airtel Money", "Bank transfer", "Card"]),
-          channel: pick(["Showroom", "Showroom", "WhatsApp", "Instagram", "Phone call"]), note: "", by: "Practice", void: false };
-        s.payments = [{ date: s.date, amount: s.paid, method: s.payment }];
-        d.sales.push(s); addMove(p, -q, "Sale", "#" + s.no, s.date);
+    d.products = list;
+
+    var moveAt = function (p, q, type, ref, reason, date, by) {
+      p.stock += q; d.movements.push({ id: uid("m"), date: date, productId: p.id, qty: q, type: type, ref: ref || "", reason: reason || "", by: by || "", after: p.stock });
+    };
+    var opening = function (p) {
+      return p.category === "Scent machines" ? 3 : p.category === "Mini machines" ? 10 : p.category === "Accessories" ? 10 : p.category === "Gift sets" ? 8 :
+        /200ml|500ml|380g|150ml/.test(p.size) ? 8 : 14;
+    };
+    var receive = function (items, supplierId, date, note, by) {
+      var pu = { id: uid("pu"), date: date, supplierId: supplierId, note: note || "", by: by || "", items: [], total: 0 };
+      items.forEach(function (it) {
+        pu.items.push({ productId: it.p.id, name: pname(it.p), qty: it.q, cost: it.p.cost }); pu.total += it.q * it.p.cost;
+        moveAt(it.p, it.q, "Received", (supplier2(supplierId) || {}).name || "Delivery", note, date, by);
+      });
+      d.purchases.push(pu);
+    };
+    var supplier2 = function (id) { for (var i = 0; i < d.suppliers.length; i++) if (d.suppliers[i].id === id) return d.suppliers[i]; return null; };
+
+    /* customers */
+    var people = ["Amina Juma", "Neema Mushi", "Baraka Mollel", "Rehema Said", "Joseph Mrema", "Zawadi Kimaro", "Halima Omari", "Grace Lyimo",
+      "Faraji Mwakyusa", "Upendo Massawe", "Saida Kombo", "Daniel Shirima", "Mariam Hassan", "Elia Temba", "Furaha Ngowi", "Aisha Mbwana",
+      "Lucy Kisanga", "Khamis Rashid", "Esther Minja", "Hamisi Mfinanga"];
+    var areas = ["Masaki", "Mikocheni", "Oysterbay", "Mbezi Beach", "Kinondoni", "Upanga", "Msasani", "Kijitonyama", "Sinza", "Kigamboni"];
+    var digits = function (i) { return "0700 000 " + String(200 + i); };
+    d.customers = people.map(function (n, i) {
+      var bd = new Date(2026, Math.floor(rnd() * 12), 1 + Math.floor(rnd() * 27));
+      return { id: uid("c"), name: n, phone: digits(i), email: "", type: "Individual", area: pick(areas), birthday: chance(0.4) ? bd.toISOString().slice(0, 10) : "",
+        scents: pick(window.YOLA.scents), notes: chance(0.25) ? pick(["Prefers delivery after 5pm", "Buys gifts for her office", "Has a mini machine in the car", "Likes to try new scents first"]) : "", created: new Date().toISOString() };
+    });
+    var businesses = [
+      ["Coral Lane Suites", "Hotel", "Masaki", "Surround Scent Tower in the lobby; Rose Oud refills monthly"],
+      ["Baobab & Brass Restaurant", "Restaurant", "Oysterbay", "Two Scent Boxes, Neroli"],
+      ["Kilele Dental Studio", "Office", "Mikocheni", "Scent Pod in reception"],
+      ["Tamu Bridal Events", "Event planner", "Msasani", "Event scenting and gift boxes for weddings"],
+      ["Upande Co-working", "Office", "Upanga", "Box Pro on the HVAC"],
+      ["Mwangaza Boutique", "Reseller", "Kariakoo", "Resells candles and sprays; 10% trade discount"]
+    ];
+    businesses.forEach(function (b, i) {
+      d.customers.push({ id: uid("c"), name: b[0], phone: digits(50 + i), email: "", type: b[1], area: b[2], birthday: "", scents: "", notes: b[3], created: new Date().toISOString() });
+    });
+    var indiv = d.customers.filter(function (c) { return c.type === "Individual"; });
+    var biz = d.customers.filter(function (c) { return c.type !== "Individual"; });
+    var regulars = indiv.slice(0, 6);
+
+    /* opening stock, four months ago */
+    var DAYS = 120;
+    var now = new Date();
+    var start = new Date(now); start.setDate(now.getDate() - DAYS); start.setHours(9, 0, 0, 0);
+    var bySup = {};
+    d.products.forEach(function (p) { (bySup[p.supplierId] = bySup[p.supplierId] || []).push({ p: p, q: opening(p) }); });
+    Object.keys(bySup).forEach(function (sid) { receive(bySup[sid], sid, start.toISOString(), "Opening stock", "Neema"); });
+
+    var byCat = function (re) { return d.products.filter(function (p) { return re.test(p.category); }); };
+    var everyday = byCat(/Candles|sprays|diffusers|oils|Mini|Gift|Accessories/);
+    var weights = function (p) {
+      return p.category === "Candles" ? 5 : p.category === "Room & linen sprays" ? 4 : p.category === "Reed diffusers" ? 3 : p.category === "Mini machines" ? 3 :
+        p.category === "Fragrance oils" ? (p.size === "30ml" ? 3 : 1) : p.category === "Gift sets" ? 2 : 1;
+    };
+    var bag = []; everyday.forEach(function (p) { for (var i = 0; i < weights(p); i++) bag.push(p); });
+
+    var addSale = function (dt, cust, lines, opts) {
+      opts = opts || {};
+      lines = lines.filter(function (l) { return l.p.stock >= l.q; });
+      if (!lines.length) return null;
+      var subtotal = lines.reduce(function (n, l) { return n + l.q * l.p.price; }, 0);
+      var discount = opts.discount ? Math.round(subtotal * opts.discount / 1000) * 1000 : 0;
+      var total = subtotal - discount;
+      var paid = opts.paid != null ? opts.paid : total;
+      var payment = opts.payment || pick(["Cash", "M-Pesa", "M-Pesa", "M-Pesa", "Mixx by Yas", "Airtel Money", "Card"]);
+      var s = { id: uid("s"), no: d.nextSaleNo++, date: dt.toISOString(), customerId: cust ? cust.id : "",
+        items: lines.map(function (l) { return { productId: l.p.id, name: pname(l.p), qty: l.q, price: l.p.price, cost: l.p.cost }; }),
+        subtotal: subtotal, discount: discount, total: total, paid: paid, payments: paid ? [{ date: dt.toISOString(), amount: paid, method: payment }] : [],
+        payment: payment, channel: opts.channel || pick(["Showroom", "Showroom", "Showroom", "WhatsApp", "WhatsApp", "Instagram", "Phone call"]),
+        note: opts.note || "", by: opts.by || pick(STAFF), void: false };
+      d.sales.push(s);
+      lines.forEach(function (l) { moveAt(l.p, -l.q, "Sale", "#" + s.no, "", s.date, s.by); });
+      return s;
+    };
+    var at = function (day, h, m) { var x = new Date(start); x.setDate(start.getDate() + day); x.setHours(h, m || 0, 0, 0); return x; };
+
+    for (var day = 1; day <= DAYS; day++) {
+      var date = at(day, 9);
+      var dow = date.getDay();
+      if (dow === 0 && !chance(0.3)) continue;                 /* mostly closed on Sundays */
+      var count = dow === 6 ? 3 + Math.floor(rnd() * 3) : 1 + Math.floor(rnd() * 3);
+      if (day > DAYS - 30) count += chance(0.5) ? 1 : 0;        /* busier lately */
+      if (day === DAYS) count = 3;                               /* a few sales today */
+      for (var k = 0; k < count; k++) {
+        var dt = at(day, 10 + Math.floor(rnd() * 8), Math.floor(rnd() * 60));
+        if (day === DAYS) {
+          /* today's sales: spread between opening (8:00) and now, never in the future */
+          var open9 = at(day, 8, 0), span = now - open9;
+          if (span < 20 * 60000) continue;                       /* too early in the day: no sales yet */
+          dt = new Date(open9.getTime() + span * (k + 1) / (count + 1));
+        }
+        var n = chance(0.62) ? 1 : chance(0.75) ? 2 : 3;
+        var lines = [], used = {};
+        for (var j = 0; j < n; j++) { var p = pick(bag); if (used[p.id]) continue; used[p.id] = 1; lines.push({ p: p, q: chance(0.15) ? 2 : 1 }); }
+        var cust = chance(0.3) ? null : chance(0.35) ? pick(regulars) : pick(indiv);
+        var owe = chance(0.05);
+        var total = lines.reduce(function (t, l) { return t + l.q * l.p.price; }, 0);
+        addSale(dt, cust, lines, owe ? { paid: Math.round(total / 2000) * 1000 } : {});
+      }
+      /* business orders: machines, refills, reseller stock */
+      if (day % 9 === 4) {
+        var b = pick(biz);
+        if (b.type === "Reseller") {
+          addSale(at(day, 11, 20), b, [{ p: pick(byCat(/Candles/)), q: 4 }, { p: pick(byCat(/sprays/)), q: 3 }], { discount: 0.10, channel: "Corporate order", payment: "Bank transfer", note: "Trade order, 10% discount" });
+        } else if (b.type === "Event planner") {
+          addSale(at(day, 14, 5), b, [{ p: byCat(/Gift/)[0], q: 3 }, { p: pick(byCat(/Candles/)), q: 2 }], { channel: "Event", payment: "Bank transfer", note: "Wedding gift boxes" });
+        } else {
+          var mach = pick(byCat(/Scent machines/)), oil = d.products.filter(function (x) { return x.category === "Fragrance oils" && x.size === "150ml"; });
+          addSale(at(day, 12, 30), b, [{ p: mach, q: 1 }, { p: pick(oil), q: 1 }], { channel: "Corporate order", payment: "Bank transfer", note: "Installed on site", paid: chance(0.35) ? Math.round(mach.price * 0.6 / 1000) * 1000 : null });
+        }
+      }
+      /* restock what runs low, roughly fortnightly, from each product's supplier */
+      if (day % 14 === 0 && day < DAYS - 3) {
+        var need = {};
+        d.products.forEach(function (p) {
+          if (p.stock <= p.reorder + 1 && !(p.sku === "SC-380-JU")) (need[p.supplierId] = need[p.supplierId] || []).push({ p: p, q: Math.max(opening(p) - p.stock, 2) });
+        });
+        Object.keys(need).forEach(function (sid) { receive(need[sid], sid, at(day, 10, 15).toISOString(), "Restock, invoice " + (1040 + day), "Neema"); });
       }
     }
-    // leave a few products low so the warnings show
-    d.products.slice(0, 3).forEach(function (p) { var drop = Math.max(0, p.stock - 2); if (drop) { addMove(p, -drop, "Adjustment", "", new Date().toISOString()); d.movements[d.movements.length - 1].reason = "Stock count correction (practice)"; } });
+
+    /* a few everyday stock corrections */
+    var adj = function (sku, q, reason, day) { var p = d.products.filter(function (x) { return x.sku === sku; })[0]; if (p && p.stock + q >= 0) moveAt(p, q, "Adjustment", "", reason, at(day, 17, 40).toISOString(), "Rehema"); };
+    adj("RS-100-PE", -2, "Tester or sample", 18);
+    adj("SC-220-RX", -1, "Damaged or broken: cracked jar", 41);
+    adj("RD-100-FP", -3, "Used at an event: Tamu Bridal showcase", 66);
+    adj("FO-30-RO", 1, "Stock count correction", 97);
+
+    /* one sale entered twice by mistake, then voided */
+    var dup = d.sales[d.sales.length - 12];
+    if (dup) {
+      var copy = addSale(new Date(new Date(dup.date).getTime() + 4 * 60000), customer2(dup.customerId), dup.items.map(function (i) { return { p: prod2(i.productId), q: i.qty }; }), { payment: dup.payment, channel: dup.channel, by: dup.by });
+      if (copy) { copy.void = true; copy.voidReason = "Entered twice by mistake"; copy.voidBy = "Baraka"; copy.items.forEach(function (i) { moveAt(prod2(i.productId), i.qty, "Void", "#" + copy.no, "Entered twice by mistake", copy.date, "Baraka"); }); }
+    }
+    function customer2(id) { for (var i = 0; i < d.customers.length; i++) if (d.customers[i].id === id) return d.customers[i]; return null; }
+    function prod2(id) { for (var i = 0; i < d.products.length; i++) if (d.products[i].id === id) return d.products[i]; return null; }
+
+    /* a couple of balances paid off later */
+    d.sales.filter(function (x) { return !x.void && x.paid < x.total; }).slice(0, 2).forEach(function (x) {
+      var later = new Date(new Date(x.date).getTime() + 6 * 86400000);
+      if (later < now) { var amt = x.total - x.paid; x.paid += amt; x.payments.push({ date: later.toISOString(), amount: amt, method: "M-Pesa" }); }
+    });
+
+    /* make sure the warnings have something to show today */
+    var force = function (sku, left) { var p = d.products.filter(function (x) { return x.sku === sku; })[0]; if (p && p.stock > left) moveAt(p, left - p.stock, "Adjustment", "", "Stock count correction", at(DAYS, 8, 30).toISOString(), "Neema"); };
+    force("SC-380-JU", 0); force("MM-GD", 1); force("RD-500-RO", 1);
+
+    d.sales.sort(function (x, y) { return x.date < y.date ? -1 : 1; });
+    var renum = {};
+    d.sales.forEach(function (x, i) { renum["#" + x.no] = "#" + (i + 1); x.no = i + 1; });
+    d.movements.forEach(function (m) { if ((m.type === "Sale" || m.type === "Void") && renum[m.ref]) m.ref = renum[m.ref]; });
+    d.nextSaleNo = d.sales.length + 1;
+    d.movements.sort(function (x, y) { return x.date < y.date ? -1 : 1; });
     return d;
   }
 
   /* ================= start ================= */
+  /* First visit on a device: open with the demo data so there's something to explore.
+     Set DEMO_ON_FIRST_VISIT to false before handing the tool over for real use. */
+  var DEMO_ON_FIRST_VISIT = true;
+  var firstVisit = true;
+  try { firstVisit = !localStorage.getItem(KEY); } catch (e) {}
   load();
-  try { if (!localStorage.getItem(KEY)) save(); } catch (e) {}
+  if (firstVisit && DEMO_ON_FIRST_VISIT) db = demoData();
+  if (firstVisit) save();
   go();
 })();
