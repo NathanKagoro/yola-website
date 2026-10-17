@@ -1,6 +1,6 @@
 # YOLA Home Fragrances: website & inventory
 
-A display-first website for YOLA (organic home fragrances and scent solutions, Mikocheni B, Dar es Salaam) and a simple inventory tool for the team. Plain HTML, CSS and JavaScript , no build step, so it runs on GitHub Pages as is.
+A display-first website for YOLA (organic home fragrances and scent solutions, Mikocheni B, Dar es Salaam) and a simple inventory tool for the team. Plain HTML, CSS and JavaScript with no build step, so it runs on GitHub Pages as is.
 
 - **Website:** `index.html`: collection, scent machines with a "how big is your space?" finder, experiences, showroom details and contact.
 - **Inventory:** `inventory/`: stock, sales, customers, suppliers, deliveries, reports and backups. Linked quietly from the website footer ("Staff: inventory").
@@ -44,7 +44,7 @@ Because the site is public on GitHub Pages, anyone with the link can open the in
 
 ## Images
 
-Product photos were taken from the YOLA Instagram and price list. Instagram interface elements (carousel arrows and dots, profile badges, the reel icon and screenshot borders) were cropped or inpainted out. They're in `assets/img/`. Higher-resolution originals from the team will make the site look even sharper , just replace the files with the same names.
+Product photos were taken from the YOLA Instagram and price list. Instagram interface elements (carousel arrows and dots, profile badges, the reel icon and screenshot borders) were cropped or inpainted out. They're in `assets/img/`. Higher-resolution originals from the team will make the site look even sharper. Just replace the files with the same names.
 
 ## Fonts
 
