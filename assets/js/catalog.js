@@ -1,4 +1,4 @@
-/* YOLA catalogue — single source of truth for the website and the inventory seed.
+/* YOLA catalogue: single source of truth for the website and the inventory seed.
    Prices are in Tanzanian shillings (TZS), taken from the YOLA Scent Marketing Solutions price list.
    price: null means "ask for price" on the website. */
 window.YOLA = {
@@ -10,6 +10,23 @@ window.YOLA = {
   instagram: "https://www.instagram.com/yola_homefragrances/",
 
   scents: ["Rose Oud", "Freesia & Pears", "Peppermint & Eucalyptus", "Neroli", "Juicy", "Relaxing"],
+
+  /* The scent wardrobe on the website. Descriptions are written from the scent names; have the team check them.
+     bg/fg/accent colour the section while a scent is selected. */
+  scentProfiles: [
+    { name: "Rose Oud", img: "assets/img/scent-rose-oud.jpg", mood: "Warm & sensual", desc: "Velvet rose over smoky, resinous oud. Deep and lingering, for evenings, lounges and bedrooms.",
+      rooms: "Lounges, bedrooms, hotel suites", bg: "#3B1419", fg: "#F4ECE2", accent: "#D9A3B4" },
+    { name: "Freesia & Pears", img: "assets/img/scent-freesia-pears.jpg", mood: "Fresh & floral", desc: "Crisp pear and airy freesia. Light and clean enough to wear every day.",
+      rooms: "Living rooms, offices, receptions", bg: "#E6E2C4", fg: "#2E2A12", accent: "#7A7A2E" },
+    { name: "Peppermint & Eucalyptus", img: "assets/img/scent-peppermint.jpg", mood: "Energising", desc: "Cool mint and green eucalyptus that wake a room up and clear the air.",
+      rooms: "Offices, gyms, bathrooms", bg: "#CFE2D6", fg: "#183428", accent: "#2F6B4F" },
+    { name: "Neroli", img: "assets/img/scent-neroli.jpg", mood: "Bright & sunny", desc: "Orange blossom, bright and clean, like an open window in the morning.",
+      rooms: "Kitchens, entrances, boutiques", bg: "#F3D6A0", fg: "#3A2408", accent: "#A8641A" },
+    { name: "Juicy", img: "assets/img/scent-juicy.jpg", mood: "Sweet & playful", desc: "A ripe, juicy fruit blend that feels like a treat. A favourite for gifting.",
+      rooms: "Bedrooms, boutiques, gift boxes", bg: "#F1BFD0", fg: "#4A1027", accent: "#C0306F" },
+    { name: "Relaxing", img: "assets/img/scent-relaxing.jpg", mood: "Calm", desc: "Soft and soothing, made for slowing down at the end of the day.",
+      rooms: "Bedrooms, spas, bathrooms", bg: "#D9D0EA", fg: "#2A2140", accent: "#6A58A0" }
+  ],
 
   /* Home fragrance collection */
   products: [
@@ -61,7 +78,7 @@ window.YOLA = {
     },
     {
       id: "giftbox", name: "Candle lover gift box", category: "Gift sets",
-      img: "assets/img/candle-gift-box.jpg", alt: "Three YOLA soy candles — Neroli, Juicy and Relaxing — in an iridescent gift box",
+      img: "assets/img/candle-gift-box.jpg", alt: "Three YOLA soy candles (Neroli, Juicy and Relaxing) in an iridescent gift box",
       tag: "Neroli, Juicy, Relaxing",
       blurb: "Three soy candles wrapped in our iridescent box. Tell us who it's for and we'll help you pick.",
       scented: false,
@@ -69,7 +86,7 @@ window.YOLA = {
     },
     {
       id: "mini", name: "Waterless mini machine", category: "Mini machines",
-      img: "assets/img/car-mini-pink.jpg", alt: "A rose-pink YOLA mini scent machine misting inside a car",
+      img: "assets/img/car-mini-mercedes.jpg", alt: "A black YOLA mini scent machine misting in a car console",
       tag: "7 colours",
       blurb: "Our best seller. Made for cars, small enclosed spaces and travel. Choose from seven finishes.",
       scented: false,

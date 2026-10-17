@@ -3,26 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>YOLA Home Fragrances — Dar es Salaam</title>
+  <title>YOLA Home Fragrances | Dar es Salaam</title>
   <meta name="description" content="Organic home fragrances, scent machines for businesses, candle and perfume making experiences and event scenting from YOLA in Mikocheni, Dar es Salaam.">
+  <meta name="theme-color" content="#24120F">
   <meta property="og:title" content="YOLA Home Fragrances">
   <meta property="og:description" content="Organic home fragrances and scent solutions for spaces, from our showroom in Mikocheni, Dar es Salaam.">
   <meta property="og:image" content="assets/img/showroom-shelves.jpg">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2343251F'/%3E%3Ctext x='32' y='42' font-family='Futura,Arial' font-size='26' font-weight='600' fill='white' text-anchor='middle'%3EY%3C/text%3E%3C/svg%3E">
-<link rel="preload" href="assets/fonts/bodoni-moda-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/fonts.css">
-  <link rel="stylesheet" href="assets/css/site.css">
+  <link rel="preload" href="assets/fonts/bodoni-moda-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/fonts.css?v=202610140937">
+  <link rel="stylesheet" href="assets/css/site.css?v=202610140937">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
-<header class="nav" id="top">
+<header class="nav" data-nav>
   <a class="wordmark" href="#top" aria-label="YOLA home">YOLA<sup>®</sup></a>
   <nav class="nav-links" aria-label="Main">
-    <a href="#collection">Home fragrance</a>
-    <a href="#machines">Scent machines</a>
+    <a href="#scents">Scents</a>
+    <a href="#collection">Shop</a>
+    <a href="#machines">For business</a>
     <a href="#experiences">Experiences</a>
-    <a href="#visit">Visit us</a>
+    <a href="#visit">Visit</a>
   </nav>
   <button class="bag-btn" type="button" data-open-bag aria-label="Open your bag">
     Bag <span class="bag-count" data-bag-count>0</span>
@@ -31,166 +33,181 @@
 
 <main id="main">
 
-  <!-- HERO -->
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="hero-copy">
-      <h1 id="hero-title">Every room has a scent. Let's find&nbsp;yours.</h1>
-      <p class="lede">Organic home fragrances and scent machines for homes, hotels, offices and events, from our showroom in Mikocheni, Dar es Salaam.</p>
-      <div class="hero-actions">
-        <a class="btn btn-dark" href="#collection">Shop home fragrance</a>
-        <a class="btn btn-line" href="#machines">Scent my business</a>
-      </div>
+  <!-- HERO: scent made visible -->
+  <section class="hero" id="top" aria-labelledby="hero-title">
+    <canvas class="mist" data-mist aria-hidden="true"></canvas>
+    <h1 id="hero-title" class="sr">YOLA Home Fragrances</h1>
+    <div class="hero-stage">
+      <span class="hw" aria-hidden="true">YO</span>
+      <figure class="hero-arch">
+        <img src="assets/img/reed-rose-oud.jpg" alt="Hands fixing a YOLA Rose Oud label onto a reed diffuser bottle">
+        <div class="label hero-tag" aria-hidden="true">
+          <span class="label-brand">YOLA</span>
+          <span class="label-kind">Now in the air</span>
+          <span class="label-scent" data-air>Rose Oud</span>
+        </div>
+      </figure>
+      <span class="hw" aria-hidden="true">LA</span>
     </div>
-    <div class="hero-art" aria-hidden="true">
-      <figure class="hero-main"><img src="assets/img/scent-stick-trio.jpg" alt=""></figure>
-      <figure class="hero-side"><img src="assets/img/reed-rose-oud.jpg" alt=""></figure>
-      <div class="label label-hero">
-        <span class="label-brand">YOLA</span>
-        <span class="label-kind">Organic reed diffuser</span>
-        <span class="label-scent">Rose Oud</span>
+    <div class="hero-foot">
+      <p class="hero-line">Organic home fragrance and scent for the spaces you live, work and gather&nbsp;in.</p>
+      <div class="hero-actions">
+        <a class="btn btn-gold" href="#collection">Shop the collection</a>
+        <a class="btn btn-ghost" href="#machines">Scent my business</a>
       </div>
+      <p class="hero-place">Showroom &amp; atelier<br>Mikocheni B, Dar es Salaam</p>
+      <a class="hero-ig" data-ig href="#" target="_blank" rel="noopener">@yola_homefragrances</a>
     </div>
   </section>
 
-  <!-- SCENT LIBRARY -->
-  <section class="scents" aria-label="Some of our scents">
-    <p class="scents-intro">From the scent library</p>
-    <ul class="scent-list" data-scent-list></ul>
+  <!-- RIBBON -->
+  <div class="ribbon" aria-hidden="true"><div class="ribbon-track" data-ribbon="YOLA"></div></div>
+
+  <!-- SCENT WARDROBE -->
+  <section class="wardrobe" id="scents" aria-labelledby="wardrobe-title" data-wardrobe>
+    <div class="wardrobe-inner">
+      <div class="wardrobe-head">
+        <h2 id="wardrobe-title">Choose a scent the way you'd choose a mood.</h2>
+        <div>
+          <p class="m-hide">Every YOLA candle, spray, diffuser and refill oil comes from the same scent library. Pick one to see where it belongs.</p>
+          <p class="wardrobe-hint" data-wardrobe-hint><span class="hint-dots" aria-hidden="true"><i></i><i></i><i></i></span><span data-hint-text>Tap a scent and the room changes with it.</span></p>
+        </div>
+      </div>
+      <div class="wardrobe-body">
+        <ul class="scent-names" role="tablist" aria-label="Scents" data-scent-tabs></ul>
+        <div class="scent-card" role="tabpanel" aria-live="polite" data-scent-panel></div>
+      </div>
+    </div>
   </section>
 
   <!-- COLLECTION -->
-  <section class="section collection" id="collection" aria-labelledby="col-title">
-    <div class="section-head">
-      <h2 id="col-title">Home fragrance</h2>
-      <p>Choose a size and scent, add it to your bag, and we'll confirm your order, delivery and payment on WhatsApp. Not sure which scent? Ask us — we'll recommend one for the room.</p>
+  <section class="collection" id="collection" aria-labelledby="col-title">
+    <div class="col-head">
+      <h2 id="col-title">The collection</h2>
+      <div><p class="m-hide">Pick a size and scent, add to your bag, and send the order on WhatsApp. We'll confirm stock, delivery and payment in the chat.</p><p class="m-only">Order on WhatsApp; we'll confirm delivery in the chat.</p><p class="swipe-hint">Swipe to see all six pieces</p></div>
     </div>
     <div class="product-grid" data-products></div>
   </section>
 
-  <!-- MINI MACHINE BAND -->
-  <section class="band" aria-labelledby="mini-title">
-    <figure class="band-img"><img src="assets/img/car-mini-mercedes.jpg" alt="A black YOLA mini scent machine misting in a car's centre console" loading="lazy"></figure>
-    <div class="band-copy">
-      <h2 id="mini-title">The mini machine sells out. Often.</h2>
-      <p>Waterless and small enough for a cup holder. Made for cars and other small enclosed spaces, and it travels with you. Seven finishes.</p>
-      <ul class="swatches" aria-label="Available finishes">
-        <li style="--sw:#C2223F">Red</li><li style="--sw:#D9A3B4">Rose pink</li><li style="--sw:#D7D7D9">Silver</li>
-        <li style="--sw:#9A9CA1">Graphite</li><li style="--sw:#2A2A2C">Matte black</li><li style="--sw:#101012">Gloss black</li><li style="--sw:#D4AE52">Gold</li>
-      </ul>
-      <button class="btn btn-light" type="button" data-ask="Hello YOLA, I'd like to order a waterless mini machine. Which finishes are in stock?">Ask what's in stock</button>
+  <!-- MINI MACHINE -->
+  <section class="mini" aria-labelledby="mini-title" data-mini>
+    <div class="mini-stage">
+      <div class="mini-halo" data-halo></div>
+      <figure class="mini-arch" data-mini-frame><img src="assets/img/mini-rose-pink.jpg" alt="A YOLA mini scent machine in rose pink, misting inside a car" data-mini-img loading="lazy"></figure>
+    </div>
+    <div class="mini-copy">
+      <h2 id="mini-title">Seven colours. One cup holder.</h2>
+      <p class="m-hide">The waterless mini machine is our best seller and it rarely stays in stock. Made for cars, closets and other small enclosed spaces, and it travels with you.</p><p class="m-only">Our best seller, made for cars and small spaces.</p>
+      <div class="swatches" role="radiogroup" aria-label="Choose a finish" data-swatches>
+        <button type="button" role="radio" aria-checked="false" style="--sw:#B3192F" data-colour="Red" data-img="assets/img/mini-red.jpg"><span>Red</span></button>
+        <button type="button" role="radio" aria-checked="true" style="--sw:#D3A1B3" data-colour="Rose pink" data-img="assets/img/mini-rose-pink.jpg"><span>Rose pink</span></button>
+        <button type="button" role="radio" aria-checked="false" style="--sw:#C4C5C8" data-colour="Silver" data-img="assets/img/mini-silver.jpg"><span>Silver</span></button>
+        <button type="button" role="radio" aria-checked="false" style="--sw:#7A7C82" data-colour="Graphite" data-img="assets/img/mini-graphite.jpg"><span>Graphite</span></button>
+        <button type="button" role="radio" aria-checked="false" style="--sw:#333336" data-colour="Matte black" data-img="assets/img/mini-matte-black.jpg"><span>Matte black</span></button>
+        <button type="button" role="radio" aria-checked="false" style="--sw:#1A1A1D" data-colour="Gloss black" data-img="assets/img/mini-gloss-black.jpg"><span>Gloss black</span></button>
+        <button type="button" role="radio" aria-checked="false" style="--sw:#C8A04A" data-colour="Gold" data-img="assets/img/mini-gold.jpg"><span>Gold</span></button>
+      </div>
+      <p class="swatch-name" data-swatch-name>Rose pink</p>
+      <button class="btn btn-gold" type="button" data-ask-mini>Ask if rose pink is in stock</button>
     </div>
   </section>
 
-  <!-- MACHINES -->
-  <section class="section machines" id="machines" aria-labelledby="mach-title">
-    <div class="section-head">
-      <h2 id="mach-title">Scent your business</h2>
-      <p>Guests remember how a place made them feel. We match a scent to your brand and the right machine to your space, so the fragrance is even from the door to the back room. Every machine comes with a complimentary fragrance of your choice on first purchase.</p>
-    </div>
-
-    <div class="finder" aria-labelledby="finder-title">
-      <div class="finder-form">
-        <h3 id="finder-title">How big is your space?</h3>
-        <p class="hint">Enter the room size in metres, or pick a typical space.</p>
-        <div class="presets" role="group" aria-label="Typical spaces">
-          <button type="button" data-preset="4,4,3">Bedroom</button>
-          <button type="button" data-preset="10,8,3">Boutique</button>
-          <button type="button" data-preset="15,12,3.2">Restaurant</button>
-          <button type="button" data-preset="25,20,4.5">Hotel lobby</button>
-          <button type="button" data-preset="40,30,5">Showroom floor</button>
-        </div>
-        <div class="dims">
-          <label>Length<input type="number" min="1" step="0.5" value="10" data-dim="l" inputmode="decimal"><span>m</span></label>
-          <label>Width<input type="number" min="1" step="0.5" value="8" data-dim="w" inputmode="decimal"><span>m</span></label>
-          <label>Height<input type="number" min="2" step="0.1" value="3" data-dim="h" inputmode="decimal"><span>m</span></label>
-        </div>
-        <p class="volume" aria-live="polite"><span data-volume>240</span> m³ <small data-match-text></small></p>
-      </div>
-
-      <div class="coverage" role="list" data-machines aria-label="Scent machines by coverage"></div>
-      <p class="axis-note">Bars show the room volume each machine covers, on a scale from 100 to 6,000 m³. The line is your space.</p>
-    </div>
-
-    <div class="b2b">
-      <figure><img src="assets/img/machines-lineup.jpg" alt="The YOLA scent machine range on a marble table" loading="lazy"></figure>
+  <!-- MACHINES FOR BUSINESS -->
+  <section class="machines" id="machines" aria-labelledby="mach-title">
+    <div class="mach-head">
+      <h2 id="mach-title">Scent is the part of your brand guests carry home.</h2>
       <div>
-        <h3>Not sure what fits?</h3>
-        <p>We'll visit, measure, suggest a signature scent for your brand and set up the machine on your HVAC, wall or table. We'll keep you stocked with refill oils too.</p>
-        <button class="btn btn-dark" type="button" data-ask="Hello YOLA, I'd like to book a site visit for scent marketing at my business.">Book a site visit</button>
+        <p class="m-hide">Hotels, boutiques, offices, salons and showrooms: we match a scent to your brand and the right machine to your space, so the fragrance is even from the entrance to the last room.</p>
+        <p class="gift">Every machine comes with a complimentary fragrance of your choice on first purchase.</p>
+        <div class="mach-cta">
+          <button class="btn btn-dark" type="button" data-ask="Hello YOLA, I'd like to book a site visit for scent marketing at my business.">Book a site visit</button>
+          <span class="m-hide">We measure, suggest a signature scent and install it.</span>
+        </div>
       </div>
     </div>
+
+    <div class="finder">
+      <div class="finder-form">
+        <div>
+          <h3>How big is your space?</h3>
+          <p class="hint m-hide">Pick a typical space or enter its size in metres.</p>
+          <div class="presets" role="group" aria-label="Typical spaces">
+            <button type="button" data-preset="4,4,3">Bedroom</button>
+            <button type="button" data-preset="10,8,3">Boutique</button>
+            <button type="button" data-preset="15,12,3.2">Restaurant</button>
+            <button type="button" data-preset="25,20,4.5">Hotel lobby</button>
+            <button type="button" data-preset="40,30,5">Showroom floor</button>
+          </div>
+          <div class="dims">
+            <label>Length<input type="number" min="1" step="0.5" value="10" data-dim="l" inputmode="decimal"><span>m</span></label>
+            <label>Width<input type="number" min="1" step="0.5" value="8" data-dim="w" inputmode="decimal"><span>m</span></label>
+            <label>Height<input type="number" min="2" step="0.1" value="3" data-dim="h" inputmode="decimal"><span>m</span></label>
+          </div>
+        </div>
+        <p class="volume" aria-live="polite"><span data-volume>240</span><span class="unit">m³</span><small data-match-text></small></p>
+      </div>
+      <div class="coverage" role="list" data-machines aria-label="Scent machines by coverage"></div>
+      <p class="axis-note m-hide">Each bar is the room volume a machine covers, from 100 to 6,000 m³. The pink line is your space.</p>
+    </div>
+
   </section>
 
   <!-- EXPERIENCES -->
-  <section class="section experiences" id="experiences" aria-labelledby="exp-title">
-    <div class="exp-media">
-      <figure class="exp-team"><img src="assets/img/team.jpg" alt="Four guests in YOLA aprons smiling at a candle making session" loading="lazy">
-        <figcaption class="label" aria-hidden="true"><span class="label-brand">YOLA</span><span class="label-kind">Experience</span><span class="label-scent">Candle making</span></figcaption>
-      </figure>
-    </div>
+  <section class="experiences" id="experiences" aria-labelledby="exp-title">
+    <figure class="exp-img">
+      <img src="assets/img/team.jpg" alt="Four guests in YOLA aprons smiling at a candle making session" loading="lazy">
+    </figure>
     <div class="exp-copy">
       <h2 id="exp-title">Trade a bag for an apron.</h2>
-      <p>Hang your handbag on the wall, put on an apron and make something you'll want to keep.</p>
+      <p class="exp-lede m-hide">It's written on our wall, and it's how every session starts: hang up your handbag, put on an apron, and make something you'll want to keep.</p>
       <dl class="exp-list">
-        <div>
-          <dt>Candle &amp; perfume making</dt>
-          <dd>Blend your own scent and pour your own candle with our team. Great for birthdays, bridal parties and team days.</dd>
-        </div>
-        <div>
-          <dt>Event scenting</dt>
-          <dd>A signature scent for weddings, launches, dinners and pop-ups.</dd>
-        </div>
-        <div>
-          <dt>Corporate &amp; personal gifting</dt>
-          <dd>Gift boxes of candles, sprays and diffusers, wrapped in the YOLA ribbon.</dd>
-        </div>
+        <div><dt>Candle &amp; perfume making</dt><dd>Blend your own scent and pour your own candle with our team. Birthdays, bridal parties and team days.</dd></div>
+        <div><dt>Event scenting</dt><dd>A signature scent for weddings, launches, dinners and pop-ups.</dd></div>
+        <div><dt>Gifting</dt><dd>Candles, sprays and diffusers, boxed and tied with the YOLA ribbon, for clients, teams and people you love.</dd></div>
       </dl>
-      <button class="btn btn-light" type="button" data-ask="Hello YOLA, I'd like to book a candle & perfume making experience.">Book an experience</button>
+      <button class="btn btn-dark" type="button" data-ask="Hello YOLA, I'd like to book a candle & perfume making experience.">Book an experience</button>
     </div>
   </section>
 
+  <div class="ribbon ribbon-alt" aria-hidden="true"><div class="ribbon-track" data-ribbon="scents"></div></div>
+
   <!-- VISIT + CONTACT -->
-  <section class="section visit" id="visit" aria-labelledby="visit-title">
-    <figure class="visit-img"><img src="assets/img/showroom-shelves.jpg" alt="Shelves of YOLA diffusers, sprays, oils and gift boxes in the Mikocheni showroom" loading="lazy"></figure>
+  <section class="visit" id="visit" aria-labelledby="visit-title">
     <div class="visit-copy">
       <h2 id="visit-title">Come and smell everything.</h2>
-      <address>
-        YOLA Company Limited<br>
-        22 Huruma Street, Mikocheni B<br>
-        Dar es Salaam, Tanzania
-      </address>
+      <address>22 Huruma Street<br>Mikocheni B, Dar es Salaam</address>
       <div class="visit-actions">
-        <a class="btn btn-dark" data-map href="#" target="_blank" rel="noopener">Get directions</a>
-        <a class="btn btn-line" data-tel href="#">Call 0653 060 820</a>
-        <a class="link" data-ig href="#" target="_blank" rel="noopener">@yola_homefragrances on Instagram</a>
+        <a class="btn btn-gold" data-map href="#" target="_blank" rel="noopener">Get directions</a>
+        <a class="btn btn-ghost" data-tel href="#">Call 0653 060 820</a>
       </div>
-
-      <form class="contact" data-contact novalidate>
-        <h3>Send us a message</h3>
-        <p class="hint">It opens WhatsApp with your message ready to send.</p>
-        <label>Your name<input name="name" autocomplete="name" required></label>
-        <label>What's it about?
-          <select name="topic">
-            <option>An order from the collection</option>
-            <option>Scent machines for my business</option>
-            <option>Candle &amp; perfume making experience</option>
-            <option>Event scenting</option>
-            <option>Gift boxes</option>
-            <option>Something else</option>
-          </select>
-        </label>
-        <label>Message<textarea name="message" rows="4" required></textarea></label>
-        <p class="form-error" data-form-error role="alert" hidden></p>
-        <button class="btn btn-dark" type="submit">Send on WhatsApp</button>
-      </form>
+      <a class="ig" data-ig href="#" target="_blank" rel="noopener">@yola_homefragrances</a>
     </div>
+    <figure class="visit-arch"><img src="assets/img/showroom-shelves.jpg" alt="Shelves of YOLA diffusers, sprays, oils and gift boxes in the Mikocheni showroom" loading="lazy"></figure>
+    <form class="contact" data-contact novalidate>
+      <h3>Or write to us</h3>
+      <p class="hint m-hide">Your message opens in WhatsApp, ready to send.</p>
+      <label>Your name<input name="name" autocomplete="name" required></label>
+      <label>About
+        <select name="topic">
+          <option>An order from the collection</option>
+          <option>Scent machines for my business</option>
+          <option>Candle &amp; perfume making experience</option>
+          <option>Event scenting</option>
+          <option>Gift boxes</option>
+          <option>Something else</option>
+        </select>
+      </label>
+      <label>Message<textarea name="message" rows="3" required></textarea></label>
+      <p class="form-error" data-form-error role="alert" hidden></p>
+      <button class="btn btn-gold" type="submit">Send on WhatsApp</button>
+    </form>
   </section>
 </main>
 
 <footer class="footer">
   <span class="wordmark">YOLA<sup>®</sup></span>
   <p>Organic home fragrances &amp; scent solutions for spaces.</p>
-  <p class="small">© <span data-year>2026</span> YOLA Company Limited. Prices in Tanzanian shillings and subject to change.</p>
+  <p class="small">© <span data-year>2026</span> YOLA Company Limited. Prices in TZS, subject to change.</p>
   <a class="small staff" href="inventory/">Staff: inventory</a>
 </footer>
 
@@ -213,7 +230,7 @@
 
 <div class="toast" data-toast role="status" aria-live="polite"></div>
 
-<script src="assets/js/catalog.js"></script>
-<script src="assets/js/site.js"></script>
+<script src="assets/js/catalog.js?v=202610140937"></script>
+<script src="assets/js/site.js?v=202610140937"></script>
 </body>
 </html>

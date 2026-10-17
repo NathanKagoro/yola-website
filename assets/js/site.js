@@ -14,14 +14,179 @@
   $$("[data-tel]").forEach(function (a) { a.href = "tel:" + Y.phoneIntl; });
   $$("[data-ig]").forEach(function (a) { a.href = Y.instagram; });
   $$("[data-year]").forEach(function (e) { e.textContent = new Date().getFullYear(); });
-  $$(".swatches li").forEach(function (li) { li.title = li.textContent; });
   document.addEventListener("click", function (e) {
     var b = e.target.closest("[data-ask]");
     if (b) wa(b.getAttribute("data-ask"));
   });
 
-  /* ---------- scent library ---------- */
-  $("[data-scent-list]").innerHTML = Y.scents.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("");
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- nav turns solid after the hero ---------- */
+  var nav = $("[data-nav]"), hero = $(".hero");
+  function navState() { nav.classList.toggle("solid", window.scrollY > hero.offsetHeight - 80); }
+  window.addEventListener("scroll", navState, { passive: true }); navState();
+
+  /* ---------- ribbons ---------- */
+  $$("[data-ribbon]").forEach(function (t) {
+    var words = t.dataset.ribbon === "scents" ? Y.scents : ["YOLA"];
+    var unit = "", i;
+    for (i = 0; i < (words.length > 1 ? 2 : 14); i++) unit += words.map(function (w) { return "<span>" + esc(w) + "</span>"; }).join("");
+    t.innerHTML = unit + unit; /* doubled for a seamless loop */
+  });
+
+  /* ---------- "now in the air" label ---------- */
+  var air = $("[data-air]"), airI = 0;
+  if (air && !reduce) setInterval(function () {
+    airI = (airI + 1) % Y.scents.length;
+    air.style.opacity = 0;
+    setTimeout(function () { air.textContent = Y.scents[airI]; air.style.opacity = 1; }, 400);
+  }, 3200);
+
+  /* ---------- mist: scent made visible ---------- */
+  (function mist() {
+    var c = $("[data-mist]"); if (!c || !c.getContext) return;
+    var ctx = c.getContext("2d"), w, h, dpr, parts = [], running = true, visible = true;
+    function size() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = c.clientWidth; h = c.clientHeight; c.width = w * dpr; c.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    function spawn(initial) {
+      var r = 60 + Math.random() * 160;
+      return { x: w * (0.15 + Math.random() * 0.7), y: initial ? Math.random() * h : h + r, r: r,
+        vy: 0.18 + Math.random() * 0.35, sway: Math.random() * Math.PI * 2, swaySpeed: 0.002 + Math.random() * 0.004,
+        a: 0.035 + Math.random() * 0.05, warm: Math.random() < 0.35 };
+    }
+    size(); for (var i = 0; i < 26; i++) parts.push(spawn(true));
+    window.addEventListener("resize", size);
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+      parts.forEach(function (p, i) {
+        p.y -= p.vy; p.sway += p.swaySpeed; p.r += 0.06;
+        var x = p.x + Math.sin(p.sway) * 40;
+        var fade = Math.min(1, p.y / (h * 0.5)) * Math.min(1, (h + p.r - p.y) / 200);
+        var g = ctx.createRadialGradient(x, p.y, 0, x, p.y, p.r);
+        var col = p.warm ? "220,194,147" : "244,236,226";
+        g.addColorStop(0, "rgba(" + col + "," + (p.a * fade) + ")"); g.addColorStop(1, "rgba(" + col + ",0)");
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+        if (p.y < -p.r) parts[i] = spawn(false);
+      });
+      if (running && visible) requestAnimationFrame(draw);
+    }
+    if (reduce) { running = false; draw(); return; }
+    if ("IntersectionObserver" in window) new IntersectionObserver(function (en) {
+      var was = visible; visible = en[0].isIntersecting; if (visible && !was) requestAnimationFrame(draw);
+    }).observe(c);
+    requestAnimationFrame(draw);
+  })();
+
+  /* ---------- scent wardrobe ---------- */
+  var wardrobe = $("[data-wardrobe]"), tabs = $("[data-scent-tabs]"), panel = $("[data-scent-panel]");
+  tabs.innerHTML = Y.scentProfiles.map(function (s, i) {
+    return '<li role="presentation"><button type="button" role="tab" id="tab-' + i + '" aria-selected="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '" data-scent-i="' + i + '">' +
+      '<span class="nm"><i class="dot" style="--dot:' + s.bg + '"></i>' + esc(s.name) + "</span><small>" + esc(s.mood) + "</small></button></li>";
+  }).join("");
+  /* One photo per scent, stacked; the active one fades in. */
+  var photoHTML = '<div class="scent-photo" aria-hidden="true">' + Y.scentProfiles.map(function (s, i) {
+    return '<img src="' + s.img + '" alt="" loading="lazy" data-sp="' + i + '">';
+  }).join("") + '<div class="label"><span class="label-brand">YOLA</span><span class="label-kind">Organic home fragrance</span><span class="label-scent" data-sp-name></span></div></div>';
+  function pickScent(i, focus) {
+    var s = Y.scentProfiles[i];
+    wardrobe.style.setProperty("--bg", s.bg); wardrobe.style.setProperty("--fg", s.fg); wardrobe.style.setProperty("--accent", s.accent);
+    $$("[data-scent-i]", tabs).forEach(function (b) { var on = +b.dataset.scentI === i; b.setAttribute("aria-selected", on); b.parentNode.classList.toggle("on", on); b.tabIndex = on ? 0 : -1; if (on && focus) b.focus(); });
+    panel.setAttribute("aria-labelledby", "tab-" + i);
+    if (!$(".scent-photo", panel)) { panel.innerHTML = photoHTML + '<div class="scent-text"></div>'; }
+    $$("[data-sp]", panel).forEach(function (im) { im.classList.toggle("on", +im.dataset.sp === i); });
+    $("[data-sp-name]", panel).textContent = s.name;
+    var txt = $(".scent-text", panel);
+    txt.innerHTML = "<h3>" + esc(s.name) + '</h3><p class="mood">' + esc(s.mood) + '</p><p class="desc">' + esc(s.desc) + '</p><p class="rooms m-hide">Lovely in: ' + esc(s.rooms) + "</p>" +
+      '<button type="button" class="btn" data-shop-scent="' + esc(s.name) + '">Shop ' + esc(s.name) + "</button>";
+    txt.classList.remove("swap"); void txt.offsetWidth; txt.classList.add("swap");
+    /* on phones the scent names are a sideways row: keep the active one in view without moving the page */
+    if (tabs.scrollWidth > tabs.clientWidth + 4) {
+      var li = tabs.children[i];
+      tabs.scrollTo({ left: li.offsetLeft - (tabs.clientWidth - li.offsetWidth) / 2, behavior: reduce ? "auto" : "smooth" });
+    }
+  }
+  /* Until someone touches it, the wardrobe plays through the scents by itself so the colour change is obvious. */
+  var AUTO_MS = 3000, autoTimer = null, autoIdx = 0, userTook = false;
+  var hintText = $("[data-hint-text]");
+  wardrobe.style.setProperty("--auto-ms", AUTO_MS + "ms");
+  function autoStep() {
+    autoIdx = (autoIdx + 1) % Y.scentProfiles.length; pickScent(autoIdx);
+    var li = tabs.children[autoIdx]; li.classList.remove("on"); void li.offsetWidth; li.classList.add("on");
+  }
+  function startAuto() {
+    if (reduce || userTook || autoTimer) return;
+    wardrobe.classList.add("auto"); hintText.textContent = "Playing through the scents. Tap one to choose.";
+    var li = tabs.children[autoIdx]; li.classList.remove("on"); void li.offsetWidth; li.classList.add("on");
+    autoTimer = setInterval(autoStep, AUTO_MS);
+  }
+  function stopAuto(byUser) {
+    clearInterval(autoTimer); autoTimer = null; wardrobe.classList.remove("auto");
+    $$(".on", tabs).forEach(function (li) { li.style.animation = "none"; void li.offsetWidth; li.style.animation = ""; });
+    if (byUser) { userTook = true; hintText.textContent = "Tap a scent and the room changes with it."; }
+  }
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (en) {
+    inView = en[0].isIntersecting; if (inView) startAuto(); else stopAuto(false);
+  }, { threshold: 0.6 }).observe(tabs);
+  tabs.addEventListener("click", function (e) { var b = e.target.closest("[data-scent-i]"); if (b) { clearTimeout(resumeT); stopAuto(true); autoIdx = +b.dataset.scentI; pickScent(autoIdx); } });
+  /* Hovering (a real mouse move, not the page scrolling under the cursor) previews a scent and pauses the autoplay;
+     leaving the list resumes it. A click or the keyboard hands control to the visitor for good. */
+  var resumeT = null, inView = false;
+  tabs.addEventListener("mousemove", function (e) {
+    var b = e.target.closest("[data-scent-i]"); if (!b) return;
+    clearTimeout(resumeT); if (autoTimer) stopAuto(false);
+    autoIdx = +b.dataset.scentI;
+    if (b.getAttribute("aria-selected") !== "true") pickScent(autoIdx);
+  });
+  tabs.addEventListener("mouseleave", function () {
+    clearTimeout(resumeT); resumeT = setTimeout(function () { if (inView) startAuto(); }, 1800);
+  });
+  tabs.addEventListener("keydown", function (e) { if (/Arrow/.test(e.key)) stopAuto(true); });
+  tabs.addEventListener("keydown", function (e) {
+    var cur = +document.activeElement.dataset.scentI, n = Y.scentProfiles.length;
+    if (e.key === "ArrowDown" || e.key === "ArrowRight") { e.preventDefault(); pickScent((cur + 1) % n, true); }
+    if (e.key === "ArrowUp" || e.key === "ArrowLeft") { e.preventDefault(); pickScent((cur - 1 + n) % n, true); }
+  });
+  pickScent(0);
+  panel.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-shop-scent]"); if (!b) return;
+    var name = b.dataset.shopScent;
+    $$("[data-scent]").forEach(function (sel) { sel.value = name; });
+    $$(".product").forEach(function (c) { refreshCard(c); if ($("[data-scent]", c)) { c.classList.add("flash"); setTimeout(function () { c.classList.remove("flash"); }, 1600); } });
+    $("#collection").scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+    toast(name + " selected on every scented product");
+  });
+
+  /* ---------- mini machine finishes ---------- */
+  var mini = $("[data-mini]"), sw = $("[data-swatches]"), miniColour = "Rose pink";
+  function pickFinish(btn) {
+    $$("button", sw).forEach(function (b) { b.setAttribute("aria-checked", b === btn); b.tabIndex = b === btn ? 0 : -1; });
+    miniColour = btn.dataset.colour;
+    mini.style.setProperty("--halo", getComputedStyle(btn).getPropertyValue("--sw"));
+    $$("[data-mini-frame] img").forEach(function (im) {
+      var on = im.dataset.finish === miniColour; im.classList.toggle("on", on);
+      im.alt = on ? "A YOLA mini scent machine misting inside a car, shown in " + miniColour.toLowerCase() : "";
+      if (on) im.removeAttribute("aria-hidden"); else im.setAttribute("aria-hidden", "true");
+    });
+    $("[data-swatch-name]").textContent = miniColour;
+    $("[data-ask-mini]").textContent = "Ask if " + miniColour.toLowerCase() + " is in stock";
+  }
+  sw.addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) pickFinish(b); });
+  sw.addEventListener("keydown", function (e) {
+    var bs = $$("button", sw), i = bs.indexOf(document.activeElement);
+    if (i < 0) return;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") { e.preventDefault(); var nb = bs[(i + 1) % bs.length]; pickFinish(nb); nb.focus(); }
+    if (e.key === "ArrowLeft" || e.key === "ArrowUp") { e.preventDefault(); var pb = bs[(i - 1 + bs.length) % bs.length]; pickFinish(pb); pb.focus(); }
+  });
+  $$("button", sw).forEach(function (b) { b.tabIndex = b.getAttribute("aria-checked") === "true" ? 0 : -1; });
+  /* All seven finishes sit stacked in the frame; picking one just changes which is visible. */
+  $("[data-mini-frame]").innerHTML = $$("button", sw).map(function (b) {
+    var on = b.getAttribute("aria-checked") === "true";
+    return '<img src="' + b.dataset.img + '" data-finish="' + esc(b.dataset.colour) + '" class="' + (on ? "on" : "") + '" loading="lazy" alt="' +
+      (on ? "A YOLA mini scent machine misting inside a car, shown in " + esc(b.dataset.colour.toLowerCase()) : "") + '"' + (on ? "" : ' aria-hidden="true"') + ">";
+  }).join("");
+  $("[data-ask-mini]").addEventListener("click", function () { wa("Hello YOLA, is the waterless mini machine in " + miniColour.toLowerCase() + " in stock? What's the price?"); });
 
   /* ---------- products ---------- */
   var grid = $("[data-products]");
@@ -34,9 +199,9 @@
     var colour = p.colours ? '<label class="field-label" for="colour-' + p.id + '">Finish</label><select class="select" id="colour-' + p.id + '" data-colour>' +
       p.colours.map(function (c) { return "<option>" + esc(c) + "</option>"; }).join("") + "</select>" : "";
     return '<article class="product" data-id="' + p.id + '">' +
-      '<div class="product-img"><img src="' + p.img + '" alt="' + esc(p.alt) + '" loading="lazy">' +
+      '<div class="product-img"><div class="frame"><img src="' + p.img + '" alt="' + esc(p.alt) + '" loading="lazy"></div>' +
       '<div class="label" aria-hidden="true"><span class="label-brand">YOLA</span><span class="label-scent">' + esc(p.tag) + "</span></div></div>" +
-      "<h3>" + esc(p.name) + '</h3><p class="cat">' + esc(p.category) + '</p><p class="blurb">' + esc(p.blurb) + "</p>" +
+      '<p class="cat">' + esc(p.category) + "</p><h3>" + esc(p.name) + '</h3><p class="blurb m-hide">' + esc(p.blurb) + "</p>" +
       (p.sizes.length > 1 ? '<fieldset class="sizes"><legend>Size</legend>' + sizes + "</fieldset>" : "") +
       scent + colour +
       '<div class="buy"><span class="price" data-price></span><div class="buy-actions" data-actions></div></div></article>';
@@ -131,7 +296,7 @@
   $("[data-checkout]").addEventListener("click", function () {
     if (!bag.length) return;
     var name = $("[data-order-name]").value.trim(), area = $("[data-order-area]").value.trim();
-    var lines = bag.map(function (b) { return "• " + b.qty + " × " + b.name + (b.detail ? " (" + b.detail + ")" : "") + " — " + tzs(b.qty * b.price); });
+    var lines = bag.map(function (b) { return "• " + b.qty + " × " + b.name + (b.detail ? " (" + b.detail + ")" : "") + ": " + tzs(b.qty * b.price); });
     var total = bag.reduce(function (n, b) { return n + b.qty * b.price; }, 0);
     wa("Hello YOLA, I'd like to place an order:\n" + lines.join("\n") + "\nTotal: " + tzs(total) +
       (name ? "\nName: " + name : "") + (area ? "\nDelivery / pickup: " + area : ""));
